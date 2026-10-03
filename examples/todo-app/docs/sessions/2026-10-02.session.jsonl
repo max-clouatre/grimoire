@@ -1,0 +1,5 @@
+{"t":"2026-10-02T19:10:00.000Z","by":"claude","kind":"start","text":"Back on Checkmate: accessibility pass while ADR 0004 waits."}
+{"t":"2026-10-02T19:35:00.000Z","by":"claude","kind":"change","text":"Edited files","files":["src/web/TodoItem.tsx"]}
+{"t":"2026-10-02T19:50:00.000Z","by":"claude","kind":"finding","text":"Checkboxes had no accessible names; screen readers announced \"checkbox, not checked\" only.","refs":["CM-017"]}
+{"t":"2026-10-02T20:05:00.000Z","by":"claude","kind":"done","text":"Labelled todo checkboxes with their titles and kept focus on the next item after delete.","refs":["CM-017"]}
+{"t":"2026-10-02T20:10:00.000Z","by":"claude","kind":"note","text":"Undo-delete toast (CM-016) can reuse the optimistic rollback path from ADR 0002."}

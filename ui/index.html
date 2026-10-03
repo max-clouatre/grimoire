@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en" data-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grimoire</title>
+<link rel="stylesheet" href="/grimoire/tokens.css">
+<link id="grim-theme" rel="stylesheet" href="/grimoire/theme.css">
+<style>
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body { font-family: var(--font-sans); font-size: 15px; color: var(--foreground); background: var(--sidebar); display: flex; overflow: hidden; user-select: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Channel sidebar ---------- */
+.sidebar { width: 250px; flex: none; background: var(--sidebar); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); overflow: hidden; transition: width 180ms cubic-bezier(.2,.8,.3,1); z-index: 3; }
+body.collapsed .sidebar { width: 0; border-right-width: 0; }
+.sidebar-inner { width: 250px; height: 100%; display: flex; flex-direction: column; }
+.sidebar-head { height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 10px 0 14px; flex: none; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; flex: 1; font-family: var(--font-heading); text-shadow: var(--heading-shadow); }
+.brand-mark { width: 22px; height: 22px; border-radius: calc(var(--radius) * 0.6); background: var(--primary); color: var(--primary-foreground); display: grid; place-items: center; }
+.icon-btn { width: 28px; height: 28px; display: grid; place-items: center; border-radius: calc(var(--radius) * 0.7); color: var(--sidebar-muted); }
+.icon-btn:hover { background: var(--hover); color: var(--sidebar-foreground); }
+.scroll { overflow-y: auto; flex: 1; }
+.section-label { font-size: 12px; font-weight: 600; color: var(--sidebar-muted); padding: 14px 16px 6px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-heading); text-transform: var(--heading-transform); }
+.channel-list { list-style: none; margin: 0; padding: 0 8px; }
+.channel { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: calc(var(--radius) * 0.8); cursor: pointer; font-weight: 500; }
+.channel:hover { background: var(--hover); }
+.channel.selected { background: var(--sidebar-accent); }
+.channel .name { color: var(--sidebar-foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.channel .count { margin-left: auto; font-size: 12px; color: var(--sidebar-muted); }
+.channel .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.channel.pulse .dot { animation: ping 900ms ease-out 2; }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 currentColor; } 100% { box-shadow: 0 0 0 7px transparent; } }
+.sidebar-foot { padding: 10px 14px 12px; font-size: 12px; color: var(--sidebar-muted); line-height: 1.4; border-top: 1px solid var(--sidebar-border); flex: none; }
+.sidebar-foot code { font-size: 11px; word-break: break-all; color: var(--sidebar-foreground); font-family: var(--font-mono); }
+.conn { display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 4px; }
+.conn i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.conn.off i { background: var(--red); }
+
+/* ---------- Main ---------- */
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; background: var(--wallpaper); isolation: isolate; }
+#theme-bg { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; z-index: 0; background: transparent; }
+.topbar { height: 44px; flex: none; display: grid; grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr); align-items: center; padding: 0 10px; gap: 12px; z-index: 5; position: relative; }
+.lead, .trail { display: flex; align-items: center; gap: 6px; }
+.trail { justify-content: flex-end; }
+.glass { background: var(--overlay); color: var(--overlay-foreground); backdrop-filter: blur(var(--overlay-blur)); -webkit-backdrop-filter: blur(var(--overlay-blur)); border-radius: calc(var(--radius) * 0.8); border: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.glass-btn { height: 30px; min-width: 30px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 14px; }
+.glass-btn:hover { filter: brightness(1.1); }
+.switcher { display: none; }
+body.collapsed .switcher { display: inline-flex; }
+
+.tabs { display: flex; gap: 3px; padding: 3px; min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.tab { height: 26px; padding: 0 12px; border-radius: calc(var(--radius) * 0.6); white-space: nowrap; font-weight: 500; font-size: 14px; color: var(--overlay-foreground); display: inline-flex; align-items: center; gap: 6px; transition: background 150ms, color 150ms; }
+.tab:hover { background: var(--hover); }
+.tab.selected { background: var(--tab-active); color: var(--tab-active-foreground); }
+.tab.fresh { animation: tab-in 500ms ease; }
+.tab.flash::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: fade 1.6s forwards; }
+@keyframes tab-in { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes fade { 70% { opacity: 1; } to { opacity: 0; } }
+
+/* ---------- Stage / filmstrip ---------- */
+/* clip, not hidden: a hidden box can still be scrolled by script — including by an
+   artifact's scrollIntoView, which bubbles out of same-origin frames. */
+.stage { flex: 1; min-height: 0; position: relative; overflow: clip; z-index: 1; }
+.filmstrip { position: absolute; inset: 0 0 8px 0; display: flex; align-items: center; gap: 24px; width: max-content; }
+.filmstrip.animate { transition: transform 280ms ease; }
+.page { position: relative; flex: none; border-radius: var(--frame-radius); transition: scale 280ms ease, width 280ms ease, height 280ms ease; }
+.page.no-anim, .page.no-anim > .frame { transition: none !important; }
+.page:not(.selected) { scale: .94; cursor: pointer; }
+.page:not(.selected) > .frame { opacity: .5; box-shadow: none; pointer-events: none; }
+.page.before { transform-origin: right center; }
+.page.after { transform-origin: left center; }
+.page.selected { z-index: 2; }
+.page.fresh { animation: page-in 500ms ease; }
+@keyframes page-in { from { opacity: 0; translate: 0 16px; } }
+
+.frame { height: 100%; display: flex; flex-direction: column; overflow: hidden; background: var(--frame); border: var(--frame-border); border-radius: var(--frame-radius); box-shadow: var(--frame-shadow); transition: opacity 280ms ease, box-shadow 400ms; }
+.frame.updated { box-shadow: var(--frame-shadow), 0 0 0 3px color-mix(in srgb, var(--green) 70%, transparent); }
+.frame.saved { box-shadow: var(--frame-shadow), 0 0 0 3px color-mix(in srgb, var(--accent) 60%, transparent); }
+.frame iframe { flex: 1; border: 0; width: 100%; min-height: 0; background: transparent; }
+.titlebar { height: 34px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 6px 0 12px; border-top: 1px solid var(--border); background: var(--titlebar); color: var(--titlebar-foreground); font-size: 13.5px; font-weight: 500; position: relative; }
+.titlebar .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--foreground); }
+.kind { font-size: 11px; font-weight: 600; border: 1px solid var(--border); border-radius: 999px; padding: 0 7px; }
+.titlebar .icon-btn { color: var(--titlebar-foreground); }
+.menu, .popover { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.menu { position: absolute; right: 6px; bottom: 38px; min-width: 210px; padding: 4px; z-index: 10; display: none; }
+.menu.open { display: block; }
+.menu button { display: flex; width: 100%; gap: 8px; align-items: center; padding: 6px 8px; border-radius: calc(var(--radius) * 0.6); font-size: 14px; text-align: left; }
+.menu button:hover { background: var(--hover); }
+.menu .path { font-size: 11px; color: var(--muted-foreground); padding: 6px 8px 4px; word-break: break-all; border-top: 1px solid var(--border); margin-top: 4px; user-select: text; font-family: var(--font-mono); }
+
+.handle { position: absolute; z-index: 4; display: none; }
+.page.selected .handle { display: block; }
+.h-e, .h-w { top: 20px; bottom: 20px; width: 14px; cursor: ew-resize; }
+.h-e { right: -7px; } .h-w { left: -7px; }
+.h-n, .h-s { left: 20px; right: 20px; height: 14px; cursor: ns-resize; }
+.h-n { top: -7px; } .h-s { bottom: -7px; }
+.h-ne, .h-nw, .h-se, .h-sw { width: 24px; height: 24px; }
+.h-ne { top: -8px; right: -8px; cursor: nesw-resize; } .h-sw { bottom: -8px; left: -8px; cursor: nesw-resize; }
+.h-nw { top: -8px; left: -8px; cursor: nwse-resize; } .h-se { bottom: -8px; right: -8px; cursor: nwse-resize; }
+body.dragging iframe { pointer-events: none; }
+
+.empty { position: absolute; top: 50%; left: 50%; translate: -50% -50%; padding: 24px 28px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; max-width: 420px; }
+.empty svg.i { width: 28px; height: 28px; }
+.empty p { margin: 0; line-height: 1.45; }
+.empty code { font-size: 12px; font-family: var(--font-mono); background: var(--hover); padding: 1px 6px; border-radius: 4px; user-select: text; }
+
+/* ---------- Theme picker ---------- */
+.popover { position: absolute; top: 46px; right: 10px; width: 330px; max-height: calc(100% - 60px); overflow-y: auto; padding: 6px; z-index: 20; display: none; }
+.popover.open { display: block; }
+.popover h3 { margin: 6px 8px 8px; font-size: 13px; font-family: var(--font-heading); }
+.theme-row { display: flex; gap: 10px; align-items: center; width: 100%; padding: 7px 8px; border-radius: calc(var(--radius) * 0.7); text-align: left; }
+.theme-row:hover { background: var(--hover); }
+.theme-row.on { background: var(--accent-soft); }
+.swatch { width: 40px; height: 30px; border-radius: 6px; flex: none; position: relative; border: 1px solid var(--border); overflow: hidden; }
+.swatch i { position: absolute; right: 4px; bottom: 4px; width: 12px; height: 12px; border-radius: 50%; }
+.swatch b { position: absolute; left: 4px; top: 4px; width: 18px; height: 12px; border-radius: 3px; }
+.theme-row .t { font-weight: 600; font-size: 14px; }
+.theme-row .d { font-size: 12px; color: var(--muted-foreground); }
+.theme-row .check { margin-left: auto; color: var(--accent); }
+.popover .hint { font-size: 12px; color: var(--muted-foreground); padding: 8px 8px 4px; border-top: 1px solid var(--border); margin-top: 6px; line-height: 1.45; }
+.popover .hint code { font-family: var(--font-mono); font-size: 11px; }
+
+/* ---------- Toasts ---------- */
+.toasts { position: absolute; left: 50%; bottom: 18px; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 6px; z-index: 30; pointer-events: none; }
+.toast { padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; animation: toast 3.2s ease forwards; }
+.toast i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.toast.new i { background: var(--blue); }
+.toast.saved i { background: var(--accent); }
+.toast.gone i { background: var(--red); }
+@keyframes toast { 0% { opacity: 0; translate: 0 8px; } 8%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<aside class="sidebar" aria-label="Channels">
+  <div class="sidebar-inner">
+    <div class="sidebar-head">
+      <div class="brand"><span class="brand-mark"><svg class="i" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 2l4 4 4-4"/></svg></span>Grimoire</div>
+      <button class="icon-btn" id="collapse" title="Collapse sidebar"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="section-label">Pinned</div>
+      <ul class="channel-list" id="pinned"></ul>
+      <div class="section-label">Channels <button class="icon-btn" id="new-channel" title="New channel (creates a folder)" style="width:22px;height:22px"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <ul class="channel-list" id="channels"></ul>
+    </div>
+    <div class="sidebar-foot"><div class="conn" id="conn"><i></i><span>Live</span></div>Driven by files in<br><code id="home"></code></div>
+  </div>
+</aside>
+
+<main class="main">
+  <iframe id="theme-bg" sandbox="allow-scripts" aria-hidden="true" tabindex="-1" hidden></iframe>
+  <div class="topbar">
+    <div class="lead">
+      <button class="glass glass-btn" id="expand" title="Toggle sidebar"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+      <button class="glass glass-btn switcher" id="switcher"><span id="switcher-name"></span><svg class="i" viewBox="0 0 24 24" style="width:13px"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg></button>
+    </div>
+    <nav class="tabs glass" id="tabs" aria-label="Artifacts"></nav>
+    <div class="trail">
+      <button class="glass glass-btn" id="theme-btn" title="Theme"><svg class="i" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.3-4-7.6-9-7.6z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/></svg><span id="theme-name"></span></button>
+      <button class="glass glass-btn" id="mode-btn" title="Light / dark"><svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
+    </div>
+  </div>
+  <section class="stage" id="stage"></section>
+  <div class="popover" id="themes"></div>
+  <div class="toasts" id="toasts"></div>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ICON_ARTIFACT = `<svg class="i" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>`;
+const KIND_LABEL = { html: "html", md: "md", dir: "app", repo: "folder", kanban: "board", dashboard: "dashboard", sessions: "sessions", session: "session", file: "file", url: "web", missing: "missing" };
+const DEFAULT = { w: 600, h: 820 };
+
+let state = { channels: [], focus: {}, themes: [], settings: {}, home: "" };
+let selected = null;            // channel id on screen
+const selectedTab = {};         // channel id → artifact id (this window only)
+const fullScreen = {};          // channel id → artifact id
+let pendingFocus = null;        // focus naming an artifact we haven't seen yet
+let firstState = true;
+const createdAt = new Map();    // "channel/artifact" → when it first appeared
+const liveFrames = new WeakMap(); // iframe window → handles its own changes (grim.onChange)
+
+const channel = () => state.channels.find(c => c.id === selected);
+const currentTab = () => {
+  const c = channel();
+  if (!c?.artifacts.length) return null;
+  return c.artifacts.some(a => a.id === selectedTab[c.id]) ? selectedTab[c.id] : c.artifacts[0].id;
+};
+const post = (url, data) => fetch(url, { method: "POST", headers: { "content-type": "application/json", "x-grim": "1" }, body: JSON.stringify(data) });
+const shareFocus = () => post("/api/focus", { channel: selected, artifact: currentTab() });
+const frames = () => [...document.querySelectorAll(".page iframe")];
+
+/* ===================== Server connection ===================== */
+
+function connect() {
+  const es = new EventSource("/api/events");
+  es.onopen = () => { $("#conn").classList.remove("off"); $("#conn span").textContent = "Live"; };
+  es.onerror = () => { $("#conn").classList.add("off"); $("#conn span").textContent = "Reconnecting…"; };
+  es.onmessage = e => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === "state") applyState(msg.state);
+    if (msg.type === "reload") onReload(msg);
+    if (msg.type === "focus") applyFocus(msg.focus);
+    if (msg.type === "theme") { Object.assign(state, { settings: msg.settings, themes: msg.themes, themeVersion: msg.themeVersion }); applyTheme(true); }
+  };
+}
+
+function applyState(next) {
+  const before = new Map(state.channels.flatMap(c => c.artifacts.map(a => [`${c.id}/${a.id}`, a])));
+  const after = new Set();
+  for (const c of next.channels) for (const a of c.artifacts) {
+    const key = `${c.id}/${a.id}`;
+    after.add(key);
+    if (!firstState && !before.has(key)) { a.fresh = true; createdAt.set(key, Date.now()); toast(`New on ${c.name} · ${a.name}`, "new"); pulse(c.id); }
+  }
+  if (!firstState) for (const [key, a] of before) if (!after.has(key)) toast(`Removed · ${a.name}`, "gone");
+
+  state = next;
+  $("#home").textContent = next.home;
+  if (firstState) applyTheme(false); // later theme changes arrive as their own "theme" event
+  if (firstState) { firstState = false; applyFocus(next.focus, true); }
+  if (!state.channels.some(c => c.id === selected)) selected = state.channels.find(c => c.pinned)?.id || state.channels[0]?.id || null;
+  if (pendingFocus) applyFocus(pendingFocus, true);
+  render();
+}
+
+/** Focus comes from focus.json — written by the agent or by any open Grimoire window. */
+function applyFocus(focus, quiet) {
+  if (!focus?.channel) return;
+  const c = state.channels.find(x => x.id === focus.channel);
+  if (!c || (focus.artifact && !c.artifacts.some(a => a.id === focus.artifact))) { pendingFocus = focus; return; }
+  pendingFocus = null;
+  const changed = selected !== c.id || (focus.artifact && currentTab() !== focus.artifact);
+  selected = c.id;
+  if (focus.artifact) selectedTab[c.id] = focus.artifact;
+  if (changed && !quiet) render();
+}
+
+function onReload({ channel: ch, artifact, file, by }) {
+  const c = state.channels.find(x => x.id === ch);
+  const a = c?.artifacts.find(x => x.id === artifact);
+  if (!a) return;
+  if (ch === selected) {
+    // Every artifact on screen hears about the change (dashboards read their peers)...
+    for (const f of frames()) f.contentWindow?.postMessage({ type: "grim-change", artifact, file, by }, location.origin);
+    // ...and the changed one reloads unless it handles changes itself.
+    const page = stage.querySelector(`.page[data-id="${CSS.escape(artifact)}"]`);
+    if (page) {
+      const frame = page.querySelector("iframe");
+      if (!liveFrames.get(frame.contentWindow)) { try { frame.contentWindow.location.reload(); } catch { frame.src = a.src; } }
+      const f = page.querySelector(".frame"), cls = by === "ui" ? "saved" : "updated";
+      f.classList.add(cls); setTimeout(() => f.classList.remove(cls), 900);
+      const tab = $(`#tabs .tab[data-id="${CSS.escape(artifact)}"]`);
+      if (tab) { tab.classList.remove("flash"); void tab.offsetWidth; tab.classList.add("flash"); }
+    }
+  } else pulse(ch);
+  if (Date.now() - (createdAt.get(`${ch}/${artifact}`) || 0) < 1500) return; // just created; "New" already said it
+  if (a.kind === "repo") return; // a repo view mirrors files other tabs already announce
+  toast(by === "ui" ? `Saved · ${a.name}` : `Updated on disk · ${a.name}`, by === "ui" ? "saved" : "");
+}
+
+// Messages from artifact documents (see grimoire/lib/bridge.js).
+addEventListener("message", e => {
+  if (e.origin !== location.origin) return;
+  const frame = frames().find(f => f.contentWindow === e.source);
+  if (!frame) return;
+  const d = e.data || {};
+  if (d.type === "grim-live") liveFrames.set(e.source, !!d.live);
+  if (d.type === "grim-focus" && channel()?.artifacts.some(a => a.id === d.artifact)) selectTab(d.artifact);
+});
+
+/* ===================== Themes ===================== */
+
+const activeTheme = () => state.themes.find(t => t.id === state.settings?.theme) || state.themes.find(t => t.id === "default") || { id: "default", name: "Default", modes: ["light", "dark"] };
+const storedMode = () => { try { return localStorage.getItem("grim-mode"); } catch { return null; } };
+const effectiveMode = () => {
+  const modes = activeTheme().modes;
+  const want = storedMode() || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  return modes.includes(want) ? want : modes[0];
+};
+
+function applyTheme(announce) {
+  const t = activeTheme(), mode = effectiveMode(), v = state.themeVersion || Date.now();
+  document.documentElement.dataset.mode = mode;
+  const link = $("#grim-theme");
+  const href = `/grimoire/theme.css?v=${v}`;
+  if (!link.href.endsWith(href)) link.href = href;
+  $("#theme-name").textContent = t.name;
+  $("#mode-btn").hidden = t.modes.length < 2;
+  for (const f of frames()) f.contentWindow?.postMessage({ type: "grim-theme", mode, v }, location.origin);
+  loadThemeBackground(t, v);
+  renderThemePicker();
+  if (announce) toast(`Theme · ${t.name}`, "saved");
+}
+
+/** A theme may ship <id>.bg.js: it runs sandboxed behind the stage with a full-size canvas. */
+let bgKey = "";
+async function loadThemeBackground(t, v) {
+  const bg = $("#theme-bg"), key = `${t.id}:${v}:${document.documentElement.dataset.mode}`;
+  if (key === bgKey) return;
+  bgKey = key;
+  if (!t.background) { bg.hidden = true; bg.srcdoc = ""; return; }
+  const code = await (await fetch(`/grimoire/theme-bg.js?name=${encodeURIComponent(t.id)}&v=${v}`)).text();
+  await new Promise(r => (link => link.sheet ? r() : link.addEventListener("load", r, { once: true }))($("#grim-theme")));
+  const css = getComputedStyle(document.documentElement);
+  const tokens = Object.fromEntries(["background", "foreground", "primary", "accent", "muted-foreground", "border"].map(k => [k, css.getPropertyValue(`--${k}`).trim()]));
+  // The frame's color-scheme must match ours, or the browser paints an opaque backdrop behind it.
+  bg.srcdoc = `<!doctype html><meta name="color-scheme" content="${document.documentElement.dataset.mode}"><style>:root{color-scheme:${document.documentElement.dataset.mode}}html,body{margin:0;height:100%;overflow:hidden;background:transparent}canvas{display:block;width:100%;height:100%}</style>
+<canvas id="c"></canvas><script>window.GRIM=${JSON.stringify({ mode: document.documentElement.dataset.mode, tokens }).replace(/</g, "\\u003c")};<\/script><script>${code.replace(/<\/script/gi, "<\\/script")}<\/script>`;
+  bg.hidden = false;
+}
+
+function renderThemePicker() {
+  const t = activeTheme();
+  $("#themes").innerHTML = `<h3>Themes</h3>` + state.themes.map(x => {
+    const s = x.swatch || {};
+    return `<button class="theme-row${x.id === t.id ? " on" : ""}" data-theme="${esc(x.id)}">
+      <span class="swatch" style="background:${esc(s.wallpaper || s.background || "#888")}"><b style="background:${esc(s.card || s.background || "#fff")}"></b><i style="background:${esc(s.primary || "#000")}"></i></span>
+      <span><div class="t">${esc(x.name)}</div><div class="d">${esc(x.description)}</div></span>${x.id === t.id ? `<span class="check">✓</span>` : ""}</button>`;
+  }).join("") + `<div class="hint">Each theme is one CSS file in <code>.grimoire/themes/</code>. Copy <code>default.css</code>, change the variables, and it appears here instantly — or ask your agent to make one.</div>`;
+}
+$("#theme-btn").onclick = e => { e.stopPropagation(); $("#themes").classList.toggle("open"); };
+$("#themes").onclick = e => {
+  const row = e.target.closest("[data-theme]");
+  if (row) { post("/api/settings", { theme: row.dataset.theme }); $("#themes").classList.remove("open"); }
+};
+$("#mode-btn").onclick = () => {
+  const next = effectiveMode() === "dark" ? "light" : "dark";
+  try { localStorage.setItem("grim-mode", next); } catch {}
+  applyTheme(false);
+};
+
+/* ===================== Rendering ===================== */
+
+function render() { renderSidebar(); renderTabs(); renderStage(); }
+
+function renderSidebar() {
+  const row = c => `<li class="channel${c.id === selected ? " selected" : ""}" data-id="${esc(c.id)}" style="color:${esc(c.color)}" title="${esc(c.description || c.id)}">
+    <span class="dot" style="background:${esc(c.color)}"></span><span class="name">${esc(c.name)}</span><span class="count">${c.artifacts.length || ""}</span></li>`;
+  $("#pinned").innerHTML = state.channels.filter(c => c.pinned).map(row).join("") || `<li class="channel" style="color:var(--sidebar-muted);cursor:default;font-weight:400;font-size:13px">Set "pinned": true in channel.json</li>`;
+  $("#channels").innerHTML = state.channels.filter(c => !c.pinned).map(row).join("");
+  $("#switcher-name").textContent = channel()?.name || "";
+}
+function pulse(id) {
+  const li = document.querySelector(`.channel[data-id="${CSS.escape(id)}"]`);
+  if (li) { li.classList.remove("pulse"); void li.offsetWidth; li.classList.add("pulse"); }
+}
+
+function renderTabs() {
+  const c = channel(), sel = currentTab(), tabs = $("#tabs");
+  tabs.style.display = c?.artifacts.length ? "" : "none";
+  if (!c) return;
+  tabs.innerHTML = c.artifacts.map(a => `<button class="tab${a.id === sel ? " selected" : ""}${a.fresh ? " fresh" : ""}" data-id="${esc(a.id)}" title="${esc(a.id)}">${esc(a.name)}</button>`).join("");
+  tabs.querySelector(".selected")?.scrollIntoView({ inline: "center", block: "nearest" });
+}
+
+const stage = $("#stage");
+let strip = null, stripChannel = null;
+
+function pageEl(a) {
+  const p = document.createElement("div");
+  p.className = "page" + (a.fresh ? " fresh" : "");
+  p.dataset.id = a.id;
+  p.innerHTML = `<div class="frame"><iframe></iframe>
+    <div class="titlebar">${ICON_ARTIFACT}<span class="name"></span><span class="kind"></span>
+      <button class="icon-btn menu-btn" title="Artifact menu"><svg class="i" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="menu"><button data-act="full"></button><button data-act="reload">Reload</button><button data-act="open">Open in new tab</button><button data-act="copy">Copy path</button><div class="path"></div></div>
+    </div></div>` + ["n", "s", "e", "w", "ne", "nw", "se", "sw"].map(d => `<div class="handle h-${d}" data-dir="${d}"></div>`).join("");
+  p.querySelector("iframe").src = a.src;
+  return p;
+}
+
+/** Reconcile pages with the channel's artifacts, keeping existing iframes alive. */
+function renderStage() {
+  const c = channel();
+  if (!c || !c.artifacts.length) {
+    strip = null; stripChannel = null;
+    stage.innerHTML = !c
+      ? `<div class="empty glass">${ICON_ARTIFACT}<p><b>No channels yet</b></p><p style="font-size:14px">Create a folder in <code>.grimoire/channels/</code></p></div>`
+      : `<div class="empty glass">${ICON_ARTIFACT}<p><b>${esc(c.name)} is empty</b></p><p style="font-size:14px;opacity:.9">Drop an <code>.html</code>, <code>.md</code> or <code>.link</code> file into<br><code>.grimoire/channels/${esc(c.id)}/</code></p></div>`;
+    return;
+  }
+  if (stripChannel !== c.id) {
+    stage.innerHTML = "";
+    strip = document.createElement("div");
+    strip.className = "filmstrip";
+    stage.appendChild(strip);
+    stripChannel = c.id;
+  }
+  const existing = new Map([...strip.children].map(p => [p.dataset.id, p]));
+  c.artifacts.forEach((a, i) => {
+    let p = existing.get(a.id);
+    if (p && p.dataset.src !== a.src) { p.remove(); p = null; }
+    if (!p) { p = pageEl(a); p.dataset.src = a.src; }
+    existing.delete(a.id);
+    if (strip.children[i] !== p) strip.insertBefore(p, strip.children[i] || null);
+    p.querySelector(".name").textContent = a.name;
+    p.querySelector("iframe").title = a.name;
+    p.querySelector(".kind").textContent = (a.link ? "link · " : "") + KIND_LABEL[a.kind];
+    p.querySelector(".path").textContent = a.path || "";
+    delete a.fresh;
+  });
+  for (const p of existing.values()) p.remove();
+  layout(false);
+}
+
+const pageBox = () => ({ w: stage.clientWidth - 16, h: stage.clientHeight - 8 });
+
+function layout(animate) {
+  const c = channel();
+  if (!strip || !c) return;
+  const sel = currentTab(), box = pageBox(), fs = fullScreen[c.id];
+  strip.classList.toggle("animate", animate);
+  let seen = false, target;
+  for (const a of c.artifacts) {
+    const p = strip.querySelector(`.page[data-id="${CSS.escape(a.id)}"]`);
+    if (!p) continue;
+    const full = fs === a.id;
+    const w = full ? box.w : Math.max(230, Math.min(a.w || DEFAULT.w, box.w));
+    const h = full ? box.h : Math.max(230, Math.min(a.h || DEFAULT.h, box.h));
+    p.style.width = w + "px"; p.style.height = h + "px";
+    p.classList.toggle("selected", a.id === sel);
+    p.classList.toggle("before", !seen && a.id !== sel);
+    p.classList.toggle("after", seen && a.id !== sel);
+    p.querySelector('[data-act="full"]').textContent = full ? "Exit full screen" : "Full screen";
+    if (a.id === sel) { seen = true; target = { p, w }; }
+  }
+  if (target) strip.style.transform = `translateX(${stage.clientWidth / 2 - (target.p.offsetLeft + target.w / 2)}px)`;
+}
+
+/* ===================== Interaction ===================== */
+
+function selectChannel(id) { if (id === selected) return; selected = id; render(); shareFocus(); }
+function selectTab(id) { selectedTab[selected] = id; renderTabs(); layout(true); shareFocus(); }
+function toggleFullScreen(id) {
+  fullScreen[selected] = fullScreen[selected] === id ? undefined : id;
+  selectedTab[selected] = id;
+  renderTabs(); layout(true);
+}
+
+document.querySelector(".sidebar").addEventListener("click", e => {
+  const li = e.target.closest(".channel[data-id]");
+  if (li) selectChannel(li.dataset.id);
+});
+$("#new-channel").onclick = async () => {
+  const name = prompt("New channel name (creates a folder in .grimoire/channels/):");
+  if (!name?.trim()) return;
+  const { id } = await (await post("/api/channel", { name })).json();
+  pendingFocus = { channel: id };
+  post("/api/focus", { channel: id });
+};
+$("#switcher").onclick = () => {
+  const i = state.channels.findIndex(c => c.id === selected);
+  selectChannel(state.channels[(i + 1) % state.channels.length].id);
+};
+const toggleSidebar = () => document.body.classList.toggle("collapsed");
+$("#collapse").onclick = toggleSidebar;
+$("#expand").onclick = toggleSidebar;
+
+$("#tabs").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b) selectTab(b.dataset.id); });
+$("#tabs").addEventListener("dblclick", e => { const b = e.target.closest(".tab"); if (b) toggleFullScreen(b.dataset.id); });
+
+stage.addEventListener("click", e => {
+  const page = e.target.closest(".page");
+  if (!page) return;
+  if (!page.classList.contains("selected")) return selectTab(page.dataset.id);
+  const menu = page.querySelector(".menu");
+  if (e.target.closest(".menu-btn")) { menu.classList.toggle("open"); return; }
+  const act = e.target.closest("[data-act]")?.dataset.act;
+  if (!act) return;
+  menu.classList.remove("open");
+  const a = channel().artifacts.find(x => x.id === page.dataset.id);
+  if (act === "full") toggleFullScreen(a.id);
+  if (act === "reload") page.querySelector("iframe").contentWindow.location.reload();
+  if (act === "open") window.open(a.src, "_blank");
+  if (act === "copy") navigator.clipboard?.writeText(a.path || "").then(() => toast("Path copied"));
+});
+document.addEventListener("pointerdown", e => {
+  if (!e.target.closest(".menu, .menu-btn")) document.querySelectorAll(".menu.open").forEach(m => m.classList.remove("open"));
+  if (!e.target.closest("#themes, #theme-btn")) $("#themes").classList.remove("open");
+});
+
+/* Resize the selected page from any edge or corner; the size is saved to channel.json. */
+stage.addEventListener("pointerdown", e => {
+  const handle = e.target.closest(".handle");
+  if (!handle) return;
+  e.preventDefault();
+  const page = handle.closest(".page"), c = channel();
+  const a = c.artifacts.find(x => x.id === page.dataset.id);
+  const dir = handle.dataset.dir, box = pageBox();
+  const startW = page.offsetWidth, startH = page.offsetHeight, x0 = e.clientX, y0 = e.clientY;
+  const prev = { w: a.w, h: a.h, fs: fullScreen[c.id] };
+  fullScreen[c.id] = undefined;
+  handle.setPointerCapture(e.pointerId);
+  document.body.classList.add("dragging");
+  page.classList.add("no-anim");
+  let cancelled = false;
+  const move = ev => {
+    const dx = ev.clientX - x0, dy = ev.clientY - y0;
+    if (dir.includes("e")) a.w = startW + 2 * dx;
+    if (dir.includes("w")) a.w = startW - 2 * dx;
+    if (dir.includes("s")) a.h = startH + 2 * dy;
+    if (dir.includes("n")) a.h = startH - 2 * dy;
+    a.w = Math.max(230, Math.min(a.w ?? startW, box.w));
+    a.h = Math.max(230, Math.min(a.h ?? startH, box.h));
+    layout(false);
+  };
+  const onKey = ev => { if (ev.key === "Escape") { cancelled = true; handle.releasePointerCapture(e.pointerId); } };
+  const end = () => {
+    handle.removeEventListener("pointermove", move);
+    document.removeEventListener("keydown", onKey);
+    document.body.classList.remove("dragging");
+    page.classList.remove("no-anim");
+    if (cancelled) { Object.assign(a, { w: prev.w, h: prev.h }); fullScreen[c.id] = prev.fs; layout(true); }
+    else if (a.w !== prev.w || a.h !== prev.h) post("/api/layout", { channel: c.id, artifact: a.id, w: a.w, h: a.h });
+  };
+  handle.addEventListener("pointermove", move);
+  handle.addEventListener("lostpointercapture", end, { once: true });
+  document.addEventListener("keydown", onKey);
+});
+
+new ResizeObserver(() => layout(false)).observe(stage);
+
+function toast(text, kind = "") {
+  const t = document.createElement("div");
+  t.className = `toast glass ${kind}`;
+  t.innerHTML = `<i></i>${esc(text)}`;
+  $("#toasts").appendChild(t);
+  setTimeout(() => t.remove(), 3300);
+}
+
+connect();
+</script>
+</body>
+</html>

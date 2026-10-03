@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Checkmate prototype</title>
+<link rel="stylesheet" href="/grimoire/grimoire.css">
+<style>
+  body { max-width: 520px; margin: 0 auto; }
+  .bar { display: flex; gap: 8px; margin: 14px 0 6px; }
+  .bar input { flex: 1; font-size: 16px; padding: 9px 12px; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 1px solid var(--border); }
+  li input { width: 18px; height: 18px; accent-color: var(--accent); }
+  li .t { flex: 1; }
+  li.done .t { text-decoration: line-through; color: var(--muted-foreground); }
+  li .del { opacity: 0; border: 0; background: none; color: var(--muted-foreground); cursor: pointer; font-size: 16px; }
+  li:hover .del { opacity: 1; }
+  li.new { animation: in 400ms ease; }
+  @keyframes in { from { opacity: 0; transform: translateY(-4px); } }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 13px; color: var(--muted-foreground); }
+  .saved { color: var(--accent); }
+</style>
+</head>
+<body>
+<h1>Checkmate</h1>
+<p class="sub">Clickable prototype · state lives in <code>prototype/todos.json</code>. Edit that file, or click here, and both stay in sync.</p>
+<div class="bar"><input id="new" type="text" placeholder="What needs doing? (Enter)" autofocus></div>
+<ul id="list"></ul>
+<div class="foot"><span id="left"></span><span class="saved" id="saved"></span><button class="btn" id="clear">Clear completed</button></div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const today = new Date().toISOString().slice(0, 10);
+let state = { items: [] }, fresh = null;
+
+async function load() { state = await grim.readJSON("todos.json"); render(); }
+async function save(msg) {
+  await grim.writeJSON("todos.json", state);
+  const el = document.getElementById("saved");
+  el.textContent = `${msg} · saved`;
+  setTimeout(() => (el.textContent = ""), 1500);
+}
+function render() {
+  document.getElementById("list").innerHTML = state.items.map(t => `
+    <li class="${t.done ? "done" : ""}${t.id === fresh ? " new" : ""}" data-id="${t.id}">
+      <input type="checkbox" ${t.done ? "checked" : ""}>
+      <span class="t">${esc(t.title)}</span>
+      ${t.due ? `<span class="tag ${!t.done && t.due < today ? "red" : t.due === today ? "yellow" : ""}">${t.due === today ? "today" : esc(t.due)}</span>` : ""}
+      <button class="del" title="Delete">×</button>
+    </li>`).join("");
+  const left = state.items.filter(t => !t.done).length;
+  document.getElementById("left").textContent = `${left} left`;
+  fresh = null;
+}
+
+document.getElementById("new").onkeydown = e => {
+  const title = e.target.value.trim();
+  if (e.key !== "Enter" || !title) return;
+  const id = Math.max(0, ...state.items.map(t => t.id)) + 1;
+  state.items.unshift({ id, title, done: false, due: null });
+  fresh = id; e.target.value = "";
+  render(); save("Added");
+};
+document.getElementById("list").onclick = e => {
+  const li = e.target.closest("li"); if (!li) return;
+  const item = state.items.find(t => t.id === Number(li.dataset.id));
+  if (e.target.matches(".del")) { state.items = state.items.filter(t => t !== item); render(); save("Deleted"); }
+  else if (e.target.matches("input")) { item.done = e.target.checked; render(); save(item.done ? "Done" : "Reopened"); }
+};
+document.getElementById("clear").onclick = () => { state.items = state.items.filter(t => !t.done); render(); save("Cleared"); };
+
+grim.onChange(({ self }) => { if (self) load(); });
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Design system</title>
+<link rel="stylesheet" href="/grimoire/grimoire.css">
+<script type="module" src="/grimoire/components.js"></script>
+<style>
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .sw { display: flex; gap: 8px; align-items: center; font-size: 12px; border: var(--surface-border); border-radius: var(--radius); padding: 6px; background: var(--surface); }
+  .sw i { width: 34px; height: 34px; border-radius: calc(var(--radius) * 0.7); flex: none; border: 1px solid var(--border); }
+  .sw b { display: block; font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; }
+  .sw span { color: var(--muted-foreground); font-family: var(--font-mono); font-size: 11px; word-break: break-all; }
+  .demo { border: 1px dashed var(--border); border-radius: var(--radius); padding: 14px; margin: 8px 0 6px; }
+  pre.snippet { font: 12px/1.5 var(--font-mono); background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; overflow-x: auto; margin: 0 0 18px; white-space: pre; }
+  .toc { columns: 2; font-size: 14px; padding-left: 18px; }
+  section { scroll-margin-top: 10px; }
+</style>
+</head>
+<body>
+<h1>Design system</h1>
+<p class="sub">Grimoire's UI templates. Every value on this page comes from the active theme, so switch themes and watch it change.</p>
+
+<ul class="toc">
+  <li><a href="#tokens">Tokens</a></li><li><a href="#type">Typography</a></li><li><a href="#blocks">Building blocks</a></li>
+  <li><a href="#data">Data display</a></li><li><a href="#calendar">Calendar</a></li><li><a href="#viewers">Viewers</a></li>
+  <li><a href="#bridge">Two-way API</a></li><li><a href="#themes">Making a theme</a></li>
+</ul>
+
+<section id="tokens">
+<h2>Tokens · <span id="theme-label" class="muted"></span></h2>
+<p class="muted">Defined in <code>Grimoire/lib/tokens.css</code>; the active theme overrides them. Use them instead of hard-coded colors.</p>
+<div class="swatches" id="swatches"></div>
+</section>
+
+<section id="type">
+<h2>Typography</h2>
+<div class="demo">
+  <h1 style="margin:0">Heading one</h1>
+  <p class="sub">A .sub line: who made this, when, from what</p>
+  <h2 style="margin-top:6px">Heading two</h2>
+  <p>Body text in <code>--font-sans</code> at <code>--text-size</code>, with <a href="#type">a link</a> and <code>inline code</code>. <span class="muted">Muted text for secondary details.</span></p>
+</div>
+<pre class="snippet">&lt;h1&gt;Title&lt;/h1&gt;
+&lt;p class="sub"&gt;Context line&lt;/p&gt;
+&lt;h2&gt;Section&lt;/h2&gt;</pre>
+</section>
+
+<section id="blocks">
+<h2>Building blocks</h2>
+<div class="demo stack">
+  <div class="grid">
+    <div class="card"><b>.card</b><div class="muted">A panel on the page surface</div></div>
+    <div class="stat"><b>42%</b><span>.stat</span></div>
+    <div class="stat"><b>7</b><span>open issues</span></div>
+  </div>
+  <div class="row">
+    <span class="tag">tag</span><span class="tag red">red</span><span class="tag orange">orange</span><span class="tag yellow">yellow</span>
+    <span class="tag green">green</span><span class="tag blue">blue</span><span class="tag purple">purple</span><span class="tag teal">teal</span>
+  </div>
+  <div class="callout">.callout: a note worth reading.</div>
+  <div class="callout warn">.callout.warn: a risk.</div>
+  <div class="callout ok">.callout.ok: all good.</div>
+  <div class="row"><button class="btn primary">.btn.primary</button><button class="btn">.btn</button><input type="text" placeholder="input"></div>
+  <div class="progress"><i style="width:64%"></i></div>
+</div>
+<pre class="snippet">&lt;div class="grid"&gt;&lt;div class="stat"&gt;&lt;b&gt;42%&lt;/b&gt;&lt;span&gt;done&lt;/span&gt;&lt;/div&gt;…&lt;/div&gt;
+&lt;span class="tag green"&gt;shipped&lt;/span&gt;
+&lt;div class="callout warn"&gt;…&lt;/div&gt;
+&lt;div class="progress"&gt;&lt;i style="width:64%"&gt;&lt;/i&gt;&lt;/div&gt;</pre>
+</section>
+
+<section id="data">
+<h2>Data display</h2>
+<div class="demo">
+  <table><tr><th>Release</th><th>Owner</th><th>Status</th></tr>
+    <tr><td>v0.3</td><td>Claude</td><td><span class="tag green">shipped</span></td></tr>
+    <tr><td>v0.4</td><td>Max</td><td><span class="tag yellow">in review</span></td></tr></table>
+  <div class="bars" style="margin-top:14px">
+    <div style="height:40%" data-value="12" data-label="Mon"></div><div style="height:70%" data-value="21" data-label="Tue"></div>
+    <div style="height:55%" data-value="17" data-label="Wed"></div><div style="height:100%" data-value="30" data-label="Thu"></div>
+  </div>
+  <ul class="checklist">
+    <li class="done"><input type="checkbox" checked><div>A finished item</div></li>
+    <li><input type="checkbox"><div>An open item <span class="tag blue">docs</span></div></li>
+  </ul>
+</div>
+<pre class="snippet">&lt;div class="bars"&gt;&lt;div style="height:70%" data-value="21" data-label="Tue"&gt;&lt;/div&gt;…&lt;/div&gt;
+&lt;ul class="checklist"&gt;&lt;li class="done"&gt;&lt;input type="checkbox" checked&gt;&lt;div&gt;…&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;</pre>
+</section>
+
+<section id="calendar">
+<h2>Calendar component</h2>
+<div class="demo" style="max-height:260px;overflow:auto">
+  <grim-calendar day="Example day" start="9" end="13">
+    <grim-event title="Standup" start="9:15" end="9:30" color="blue"></grim-event>
+    <grim-event title="Design review" start="10:00" end="11:00" color="purple"></grim-event>
+    <grim-event title="Lunch" start="12:00" end="13:00" color="teal"></grim-event>
+  </grim-calendar>
+</div>
+<pre class="snippet">&lt;script type="module" src="/grimoire/components.js"&gt;&lt;/script&gt;
+&lt;grim-calendar day="Thu Oct 2" start="8" end="18" today&gt;
+  &lt;grim-event title="Standup" start="9:15" end="9:30" color="blue"&gt;&lt;/grim-event&gt;
+&lt;/grim-calendar&gt;</pre>
+</section>
+
+<section id="viewers">
+<h2>Viewers</h2>
+<p>Name a data file with a viewer extension and Grimoire renders it. No HTML needed, and both are two-way.</p>
+<h3><code>*.kanban.json</code> → board</h3>
+<pre class="snippet">{
+  "title": "Board", "idPrefix": "app",
+  "columns": [{ "id": "todo", "name": "To do" }, { "id": "doing", "name": "Doing" }, { "id": "done", "name": "Done" }],
+  "cards": [{ "id": "app-001", "title": "…", "column": "doing", "milestone": "M1",
+              "tags": ["ui", "blocked"], "owner": "claude", "notes": "…" }]
+}</pre>
+<h3><code>*.dashboard.json</code> → project status</h3>
+<pre class="snippet">{
+  "title": "Project", "subtitle": "…",
+  "board": "20-board.link", "roadmap": "30-roadmap.link", "decisions": "50-decisions.link",
+  "health": { "status": "on-track | at-risk | off-track", "note": "…" },
+  "milestones": [{ "id": "M1", "name": "…", "goal": "…" }]
+}</pre>
+<p class="muted">Milestone progress, blocked work and counts are computed live from the board's cards (tag <code>blocked</code> marks a blocker).</p>
+</section>
+
+<section id="bridge">
+<h2>Two-way API</h2>
+<p>Every artifact gets <code>window.grim</code>. Writes are limited to data files inside the artifact.</p>
+<pre class="snippet">const todos = await grim.readJSON("todos.json");      // a file in this artifact
+await grim.writeJSON("todos.json", todos);             // .json .md .txt .csv .yml
+const board = await grim.peer("20-board.link").readJSON(); // another artifact on this channel
+grim.focus("30-roadmap.link");                          // bring a tab into view
+grim.onChange(({ artifact, self, by }) =&gt; reload());  // handle changes yourself (no page reload)</pre>
+</section>
+
+<section id="themes">
+<h2>Making a theme</h2>
+<ol>
+  <li>Copy <code>.grimoire/themes/default.css</code> to <code>.grimoire/themes/my-theme.css</code>.</li>
+  <li>Edit <code>@name</code>, <code>@description</code>, <code>@modes</code> in the header, then the variables.</li>
+  <li>It appears in the theme picker immediately; edits apply live while it's active.</li>
+  <li>Optional: <code>my-theme.bg.js</code> draws on a full-size <code>&lt;canvas id="c"&gt;</code> behind the stage.</li>
+</ol>
+<p class="muted">Or ask your agent: <i>"make a Grimoire theme inspired by an old Mac terminal"</i>.</p>
+</section>
+
+<script>
+const TOKENS = ["background", "foreground", "card", "muted", "muted-foreground", "primary", "primary-foreground", "accent", "border",
+  "red", "orange", "yellow", "green", "blue", "purple", "teal", "wallpaper", "sidebar", "overlay", "tab-active", "radius", "font-sans", "font-heading", "text-size"];
+function draw() {
+  const css = getComputedStyle(document.documentElement);
+  document.getElementById("theme-label").textContent = `${document.documentElement.dataset.mode || "light"} mode`;
+  document.getElementById("swatches").innerHTML = TOKENS.map(t => {
+    const v = css.getPropertyValue(`--${t}`).trim();
+    const visual = /^(font|text|radius)/.test(t) ? `<i style="display:grid;place-items:center;font-size:11px;background:var(--muted)">Aa</i>` : `<i style="background:${v.replace(/"/g, "'")}"></i>`;
+    return `<div class="sw">${visual}<div><b>--${t}</b><span>${v.length > 46 ? v.slice(0, 46) + "…" : v}</span></div></div>`;
+  }).join("");
+}
+document.getElementById("grim-theme")?.addEventListener("load", draw);
+new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-mode"] });
+addEventListener("load", draw);
+draw();
+</script>
+</body>
+</html>

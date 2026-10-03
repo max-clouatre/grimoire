@@ -1,0 +1,19 @@
+{"t":"2026-10-02T23:58:00.000Z","by":"claude","kind":"note","text":"Reconstructed from file timestamps after the fact: times before 21:30 are approximate."}
+{"t":"2026-10-02T23:59:00.000Z","by":"claude","kind":"start","text":"Started exploring Television (telepath-computer/television) and whether it can run without a Mac."}
+{"t":"2026-10-03T00:05:00.000Z","by":"claude","kind":"done","text":"Built a static PoC of Television's UI from its open specs (television-poc/).","files":["television-poc/index.html"]}
+{"t":"2026-10-03T00:12:00.000Z","by":"claude","kind":"finding","text":"Television's agent side is unsupported on Windows; WSL isn't installed here. The browser client works anywhere."}
+{"t":"2026-10-03T00:20:00.000Z","by":"claude","kind":"decision","text":"The filesystem is the API: channels are folders, artifacts are files, focus is a file (ADR 0001, 0004).","refs":["grim-001","grim-006"]}
+{"t":"2026-10-03T00:30:00.000Z","by":"claude","kind":"done","text":"Core server + live UI running at localhost:4180; first agent-written artifact (json-render-app overview).","files":["grimoire/server.mjs",".grimoire/channels/40-workspace/10-json-render-app-overview.html"]}
+{"t":"2026-10-03T00:31:00.000Z","by":"claude","kind":"finding","text":"A repo view's scrollIntoView scrolled the whole stage sideways. Stage is now overflow: clip.","refs":["grim-010"]}
+{"t":"2026-10-03T00:40:00.000Z","by":"claude","kind":"decision","text":"Two-way writes are limited to data files inside the artifact, with a custom header and origin check (ADR 0006).","refs":["grim-011"]}
+{"t":"2026-10-03T00:45:00.000Z","by":"claude","kind":"decision","text":"Themes are one CSS file of design tokens; defaults sit in :where() so any theme wins (ADR 0005).","refs":["grim-014","grim-017"]}
+{"t":"2026-10-03T00:46:00.000Z","by":"claude","kind":"done","text":"Eight themes, including animated Matrix, Final Fantasy, Azeroth and Synthwave backgrounds.","refs":["grim-016"]}
+{"t":"2026-10-03T00:51:00.000Z","by":"claude","kind":"done","text":"Project channels: this project and the Checkmate sample, each with dashboard, board, roadmap, ADRs.","refs":["grim-018","grim-019"]}
+{"t":"2026-10-03T00:54:00.000Z","by":"claude","kind":"finding","text":"Theme background iframe painted white under dark themes: its color-scheme must match the page.","refs":["grim-029"]}
+{"t":"2026-10-03T02:24:00.000Z","by":"claude","kind":"done","text":"Ideas page: how this becomes a real thing (directions, 16 features, 90-day plan, naming).","files":["grimoire/docs/ideas/index.html","grimoire/docs/ideas/ideas.json"]}
+{"t":"2026-10-03T02:27:00.000Z","by":"claude","kind":"decision","text":"Sessions: one append-only .session.jsonl per day per project, kept by the CLI and Claude Code hooks."}
+{"t":"2026-10-03T02:36:55.288Z","by":"claude","kind":"change","text":"Edited files","files":["grimoire/docs/architecture.md","grimoire/README.md","grimoire/docs/learnings.md"],"session":"8b413b20-19e0-467d-83cb-4b60e1040d46","last":"2026-10-03T02:38:25.805Z"}
+{"t":"2026-10-03T02:39:06.937Z","by":"claude","kind":"decision","text":"Renamed the project from tv to Grimoire: .grimoire/ workspace, grim command, window.grim page API. Television stays credited.","refs":["grim-031"]}
+{"t":"2026-10-03T02:39:06.997Z","by":"claude","kind":"done","text":"Sessions shipped: daily .session.jsonl logs, grim CLI, Claude Code hooks (start/edit/stop/end), Sessions viewer with notes, dashboard panel.","refs":["grim-030"]}
+{"t":"2026-10-03T02:39:07.056Z","by":"claude","kind":"done","text":"Ideas page linked into the channel; naming journey recorded there (Glance → Tome → Grimoire)."}
+{"t":"2026-10-03T02:39:07.116Z","by":"claude","kind":"question","text":"Decide direction (OSS tool vs agent-native PM vs team hosting) after two weeks of dogfooding.","refs":["grim-032"]}

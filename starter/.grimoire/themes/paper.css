@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Mono&display=swap");
+/*
+  @name Paper
+  @description Editorial serif on warm paper
+  @modes light
+*/
+
+:root {
+  --background: #fbf8f1;
+  --foreground: #2a2620;
+  --card: #f4efe3;
+  --muted: #efe9da;
+  --muted-foreground: #7a705f;
+  --primary: #2a2620;
+  --primary-foreground: #fbf8f1;
+  --accent: #b5452b;
+  --border: #e2d9c4;
+  --radius: 3px;
+
+  --font-sans: "Newsreader", Georgia, serif;
+  --font-heading: "Newsreader", Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --text-size: 17px;
+  --heading-weight: 600;
+  --heading-tracking: -0.015em;
+
+  --wallpaper: #e9e2d0;
+  --sidebar: #f4efe3;
+  --sidebar-accent: #e7dfcb;
+  --overlay: rgba(251, 248, 241, 0.86);
+  --frame-radius: 4px;
+  --frame-shadow: 0 1px 0 #d8cdb3, 0 12px 28px rgba(80, 60, 20, 0.12);
+}

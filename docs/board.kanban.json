@@ -1,0 +1,369 @@
+{
+  "title": "Grimoire · board",
+  "idPrefix": "grim",
+  "columns": [
+    {
+      "id": "backlog",
+      "name": "Backlog"
+    },
+    {
+      "id": "next",
+      "name": "Up next"
+    },
+    {
+      "id": "doing",
+      "name": "In progress"
+    },
+    {
+      "id": "review",
+      "name": "Review"
+    },
+    {
+      "id": "done",
+      "name": "Done"
+    }
+  ],
+  "cards": [
+    {
+      "id": "grim-033",
+      "title": "Claude plugin marketplace: install Grimoire into any project",
+      "column": "next",
+      "milestone": "M4",
+      "tags": [
+        "distribution",
+        "plugin",
+        "agent"
+      ],
+      "notes": "Make this repo a Claude Code plugin marketplace (.claude-plugin/marketplace.json) with a grimoire plugin bundling the skill, hooks (hooks/hooks.json via ${CLAUDE_PLUGIN_ROOT}), grim CLI, server and themes. Goal: /plugin marketplace add max-clouatre/grimoire → /plugin install grimoire@grimoire, then \"set up Grimoire here\" scaffolds .grimoire/ from starter/. Replaces copying starter/ by hand; supersedes the installer half of grim-027."
+    },
+    {
+      "id": "grim-032",
+      "title": "Decide direction after dogfooding (see Ideas)",
+      "column": "next",
+      "milestone": "M3",
+      "tags": [
+        "decision"
+      ],
+      "notes": "Directions A–E on the Ideas page. Revisit after weeks 3–4 of the 90-day plan."
+    },
+    {
+      "id": "grim-020",
+      "title": "Activity view across all projects",
+      "column": "next",
+      "milestone": "M3",
+      "tags": [
+        "agent",
+        "ui"
+      ],
+      "notes": "Sessions (grim-030) cover one project. This is the cross-project timeline."
+    },
+    {
+      "id": "grim-021",
+      "title": "Git-aware repo view (commits, branch, changed files)",
+      "column": "next",
+      "milestone": "M3",
+      "tags": [
+        "repo-view"
+      ],
+      "notes": "Shell out to git with a strict allowlist of read-only commands."
+    },
+    {
+      "id": "grim-022",
+      "title": "Merge per-repo .grimoire/ folders into the workspace",
+      "column": "backlog",
+      "milestone": "M3",
+      "tags": [
+        "model"
+      ],
+      "notes": "Open question: how do two repos' channel numbers interleave? See decision 0001's consequences."
+    },
+    {
+      "id": "grim-023",
+      "title": "Link to running dev server with health dot",
+      "column": "backlog",
+      "milestone": "M3",
+      "tags": [
+        "links"
+      ]
+    },
+    {
+      "id": "grim-024",
+      "title": "Drag tabs to reorder (rename number prefixes)",
+      "column": "backlog",
+      "milestone": "M4",
+      "tags": [
+        "ui"
+      ],
+      "notes": "Renaming files changes artifact ids: layout keys in channel.json must move with them."
+    },
+    {
+      "id": "grim-025",
+      "title": "Syntax highlighting + search in repo view",
+      "column": "backlog",
+      "milestone": "M4",
+      "tags": [
+        "repo-view"
+      ]
+    },
+    {
+      "id": "grim-026",
+      "title": "Keyboard navigation (ctrl+arrows)",
+      "column": "backlog",
+      "milestone": "M4",
+      "tags": [
+        "ui",
+        "a11y"
+      ]
+    },
+    {
+      "id": "grim-027",
+      "title": "Package as npx grimoire (npm publish, grim bin)",
+      "column": "backlog",
+      "milestone": "M4",
+      "tags": [
+        "dx"
+      ]
+    },
+    {
+      "id": "grim-031",
+      "title": "Rename tv → Grimoire (grim CLI)",
+      "column": "done",
+      "milestone": "M3",
+      "tags": [
+        "brand"
+      ],
+      "owner": "claude",
+      "notes": "ADR 0009."
+    },
+    {
+      "id": "grim-030",
+      "title": "Sessions: self-written daily logs + hooks",
+      "column": "done",
+      "milestone": "M3",
+      "tags": [
+        "agent",
+        "two-way"
+      ],
+      "owner": "claude",
+      "notes": "ADR 0008. grim CLI, Claude Code hooks, Sessions viewer, dashboard panel."
+    },
+    {
+      "id": "grim-029",
+      "title": "Theme background iframe painted white in dark themes",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "bug",
+        "themes"
+      ],
+      "owner": "claude",
+      "notes": "color-scheme mismatch between frame and parent. See learnings."
+    },
+    {
+      "id": "grim-028",
+      "title": "Mode toggle visible for single-mode themes",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "bug",
+        "ui"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-019",
+      "title": "Write sample project channel (Checkmate)",
+      "column": "done",
+      "milestone": "M3",
+      "tags": [
+        "docs"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-018",
+      "title": "Grimoire's own project channel",
+      "column": "done",
+      "milestone": "M3",
+      "tags": [
+        "docs"
+      ],
+      "owner": "claude",
+      "notes": "Status, board, roadmap, architecture, decisions, learnings, design system, source."
+    },
+    {
+      "id": "grim-017",
+      "title": "Theme isolation: dark defaults overrode single-mode themes",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "bug",
+        "themes"
+      ],
+      "owner": "claude",
+      "notes": "Fixed by wrapping defaults in :where(). See learnings."
+    },
+    {
+      "id": "grim-016",
+      "title": "Eight themes incl. animated backgrounds",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "themes"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-015",
+      "title": "Theme picker + settings.json",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "themes",
+        "ui"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-014",
+      "title": "Design tokens (shadcn-style) for app and artifacts",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "themes"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-013",
+      "title": "Kanban + dashboard viewers",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "viewers"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-012",
+      "title": "Markdown task lists write back",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "two-way"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-011",
+      "title": "window.grim bridge API",
+      "column": "done",
+      "milestone": "M2",
+      "tags": [
+        "two-way"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-010",
+      "title": "Repo view scrolled the whole app sideways",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "bug"
+      ],
+      "owner": "claude",
+      "notes": "scrollIntoView inside a same-origin iframe scrolls ancestors. Stage is now overflow: clip."
+    },
+    {
+      "id": "grim-009",
+      "title": "Grimoire agent skill",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "agent"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-008",
+      "title": "Secret hiding + path escape checks",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "security"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-007",
+      "title": "Layout persistence in channel.json",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "ui"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-006",
+      "title": "focus.json shared by agent and UI",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "model"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-005",
+      "title": "Repo view for folders",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "repo-view"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-004",
+      "title": ".link pointers",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "model"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-003",
+      "title": "Live reload over SSE",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "server"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-002",
+      "title": "Markdown renderer (no deps)",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "server"
+      ],
+      "owner": "claude"
+    },
+    {
+      "id": "grim-001",
+      "title": "Server: scan .grimoire/ and serve artifacts",
+      "column": "done",
+      "milestone": "M1",
+      "tags": [
+        "server"
+      ],
+      "owner": "claude"
+    }
+  ]
+}

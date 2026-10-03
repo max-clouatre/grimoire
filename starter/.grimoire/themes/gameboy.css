@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
+/*
+  @name Game Boy
+  @description Four shades of green, 1989
+  @modes light
+*/
+
+:root {
+  /* The whole palette: #0f380f #306230 #8bac0f #9bbc0f */
+  --background: #9bbc0f;
+  --foreground: #0f380f;
+  --card: #8bac0f;
+  --muted: #8bac0f;
+  --muted-foreground: #306230;
+  --primary: #0f380f;
+  --primary-foreground: #9bbc0f;
+  --accent: #306230;
+  --border: #306230;
+  --radius: 0px;
+
+  --font-sans: "VT323", ui-monospace, monospace;
+  --font-heading: "Press Start 2P", ui-monospace, monospace;
+  --font-mono: "VT323", ui-monospace, monospace;
+  --text-size: 20px;
+  --heading-weight: 400;
+  --heading-tracking: 0;
+
+  /* Everything is green. That's the point. */
+  --red: #0f380f; --orange: #306230; --yellow: #306230; --green: #0f380f;
+  --blue: #306230; --purple: #0f380f; --teal: #306230;
+
+  --surface-border: 2px solid #0f380f;
+
+  --wallpaper: repeating-linear-gradient(0deg, #c4cfa1 0 2px, #bcc795 2px 4px);
+  --sidebar: #8bac0f;
+  --sidebar-foreground: #0f380f;
+  --sidebar-muted: #306230;
+  --sidebar-accent: #9bbc0f;
+  --sidebar-border: #0f380f;
+  --overlay: #306230;
+  --overlay-foreground: #9bbc0f;
+  --overlay-blur: 0px;
+  --tab-active: #9bbc0f;
+  --tab-active-foreground: #0f380f;
+  --frame-border: 4px solid #0f380f;
+  --frame-radius: 0px;
+  --frame-shadow: 6px 6px 0 #306230;
+  --titlebar: #8bac0f;
+  --titlebar-foreground: #0f380f;
+}

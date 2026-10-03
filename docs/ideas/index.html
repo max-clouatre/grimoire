@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Ideas · making Grimoire real</title>
+<link rel="stylesheet" href="/grimoire/grimoire.css">
+<style>
+  body { max-width: 980px; margin: 0 auto; padding-bottom: 60px; }
+  .hero { padding: 6px 0 4px; }
+  .hero h1 { font-size: 32px; }
+  .thesis { font-size: 19px; line-height: 1.45; margin: 10px 0 18px; font-family: var(--font-heading); }
+  .thesis b { color: var(--accent); }
+  section { margin-top: 34px; }
+  section > h2 { font-size: 20px; display: flex; align-items: baseline; gap: 10px; }
+  section > h2 .n { font-size: 12px; color: var(--muted-foreground); font-family: var(--font-mono); font-weight: 600; }
+  .lead { color: var(--muted-foreground); margin-top: -2px; }
+  .persona b { display: block; font-family: var(--font-heading); margin-bottom: 4px; }
+  .persona p { margin: 0; font-size: 14px; color: var(--muted-foreground); }
+  .pick { outline: 2px solid var(--accent); outline-offset: -1px; }
+  td small { display: block; color: var(--muted-foreground); }
+  .rec { font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+  .toolbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 4px 0 12px; }
+  .chip { font: inherit; font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--muted-foreground); cursor: pointer; }
+  .chip.on { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
+  .ideas { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .idea { position: relative; display: flex; flex-direction: column; gap: 6px; }
+  .idea h3 { margin: 0; font-size: 15px; padding-right: 26px; }
+  .idea p { margin: 0; font-size: 13.5px; color: var(--muted-foreground); flex: 1; }
+  .idea .meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 12px; }
+  .idea .star { position: absolute; top: 10px; right: 10px; border: 0; background: none; cursor: pointer; font-size: 18px; color: var(--muted-foreground); line-height: 1; }
+  .idea .star.on { color: var(--yellow); }
+  .idea.parked { opacity: .55; }
+  .status { cursor: pointer; }
+  .dots { letter-spacing: 1px; color: var(--muted-foreground); font-family: var(--font-mono); }
+  .dots b { color: var(--accent); }
+  .score { margin-left: auto; font-family: var(--font-mono); color: var(--muted-foreground); }
+
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .phase h3 { margin: 0 0 8px; font-size: 14px; }
+  .phase .progress { margin-bottom: 8px; }
+  .phase label { display: flex; gap: 8px; font-size: 13.5px; padding: 5px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .phase label:last-child { border-bottom: 0; }
+  .phase input { accent-color: var(--accent); margin-top: 4px; }
+  .phase label.done span { text-decoration: line-through; color: var(--muted-foreground); }
+
+  .names { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .name { display: flex; gap: 10px; align-items: center; }
+  .name b { font-family: var(--font-heading); font-size: 16px; }
+  .name p { margin: 0; font-size: 12.5px; color: var(--muted-foreground); }
+  .name .vote { margin-left: auto; flex: none; min-width: 44px; }
+  .saved { font-size: 12px; color: var(--accent); margin-left: auto; }
+  .ladder { display: grid; gap: 6px; }
+  .ladder .card { display: grid; grid-template-columns: 130px 1fr; gap: 12px; align-items: baseline; }
+  .ladder .card b { font-family: var(--font-heading); }
+  @media (max-width: 640px) { .ladder .card { grid-template-columns: 1fr; gap: 2px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Making Grimoire real</h1>
+  <p class="sub">Ideas for turning today's proof of concept into something we pursue · drafted by Claude, Oct 2 · stars, statuses, plan and votes on this page save to <code>Grimoire/docs/ideas/ideas.json</code></p>
+  <p class="thesis">Agents already do their work in files. Grimoire makes that work <b>visible, steerable and shared</b>: a live window onto a project's real state, where you and your agents edit the same things.</p>
+  <div class="grid">
+    <div class="stat"><b>1 day</b><span>from idea to working PoC</span></div>
+    <div class="stat"><b>0</b><span>dependencies, any agent</span></div>
+    <div class="stat"><b>2</b><span>project channels, both live</span></div>
+    <div class="stat"><b>8</b><span>themes, one file each</span></div>
+  </div>
+</div>
+
+<section>
+  <h2><span class="n">01</span>Why this could matter</h2>
+  <div class="stack">
+    <div class="card"><b>Chat is the wrong container for work.</b> Agent output scrolls away. Plans, boards, decisions and status get rewritten from scratch each session or lost entirely. People keep the real state in their heads.</div>
+    <div class="card"><b>Agents are file-native; humans aren't.</b> An agent happily keeps <code>docs/board.kanban.json</code> current, but nobody reads JSON. Grimoire is the translation layer, and it works both ways: you click, a file changes, the agent sees it.</div>
+    <div class="card"><b>Trust is the bottleneck, not capability.</b> As agents run longer and in parallel, the question shifts from "can it do it?" to "what did it do, and what does it need from me?" A glanceable surface answers that without reading transcripts.</div>
+  </div>
+  <div class="callout">The unfair advantage of files-first: <b>no lock-in, no integration work, and it's already where the agent is.</b> Every harness that can write a file can drive grim today, and everything it shows is plain text in git.</div>
+</section>
+
+<section>
+  <h2><span class="n">02</span>Who it's for first</h2>
+  <p class="lead">Start narrow: people already working with coding agents every day, who feel the "what is my agent doing?" pain most.</p>
+  <div class="grid">
+    <div class="card persona pick"><b>The agent-heavy solo dev</b><p>Runs Claude Code or Codex all day on 2–5 repos. Wants to glance at what changed, what's blocked and what's next without scrolling chat. <b>Our wedge.</b></p></div>
+    <div class="card persona"><b>The tech lead</b><p>Reviews agent and human work across a small team. Wants status, decisions and review queues that stay true on their own.</p></div>
+    <div class="card persona"><b>The builder-PM</b><p>Writes PRDs and roadmaps, ships with agents. Wants docs that are live, not stale wiki pages.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">03</span>Directions we could take</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Direction</th><th>What it is</th><th>Upside</th><th>Risk</th><th></th></tr>
+    <tr><td><b>A · Open-source dev tool</b></td><td><code>npx Grimoire</code> in any repo; <code>.grimoire/</code> checked into git; skill auto-installed</td><td>Fast adoption, clear wedge, cheap to run</td><td>Easy to copy; no revenue on its own</td><td class="rec">Start here</td></tr>
+    <tr><td><b>B · Agent-native project management</b></td><td>Boards, roadmaps and ADRs as files that agents keep true; review lane; questions inbox</td><td>The real product: replaces stale tickets with live state</td><td>Competes with Linear/Jira habits</td><td class="rec">Grow into</td></tr>
+    <tr><td><b>C · Hosted sharing for teams</b></td><td>Read-only links to a repo's channels, comments, sync across machines</td><td>Clear thing to charge for</td><td>Hosting, auth, security of private repos</td><td class="rec">Business</td></tr>
+    <tr><td><b>D · Open viewer spec</b></td><td>"Files in, UI out": a spec for viewers and themes others can build</td><td>Ecosystem, standards position</td><td>Specs don't win without users</td><td class="rec">Underpin</td></tr>
+    <tr><td><b>E · Personal life dashboard</b></td><td>Television's original angle: calendars, recipes, research</td><td>Broad audience</td><td>Diffuse; Telepath is already there</td><td class="muted">Not now</td></tr>
+  </table></div>
+  <div class="callout ok"><b>Recommendation:</b> ship A to earn users and learn fast, aim the roadmap at B, keep D as the clean architecture underneath, and only build C once teams ask to share.</div>
+</section>
+
+<section>
+  <h2><span class="n">04</span>Feature ideas <span class="saved" id="saved-f"></span></h2>
+  <p class="lead">★ what excites you. Click a status to move it along: idea → exploring → committed → parked. Score = impact × 2 − effort.</p>
+  <div class="toolbar" id="filters"></div>
+  <div class="ideas" id="ideas"></div>
+</section>
+
+<section>
+  <h2><span class="n">05</span>Where we sit</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Alternative</th><th>Where we differ</th></tr>
+    <tr><td><b>Television</b> (Telepath)<small>our inspiration</small></td><td>Files are the API (no CLI or registry); SDLC-first; two-way artifacts; themes as token files; runs anywhere Node runs. Worth talking to them rather than racing.</td></tr>
+    <tr><td><b>Chat artifacts &amp; canvases</b><small>Claude, ChatGPT, Cursor</small></td><td>Theirs live inside one chat and one vendor. Ours live in the repo, persist across sessions and agents, and you can edit them.</td></tr>
+    <tr><td><b>Linear / Jira / GitHub Projects</b></td><td>They're the system of record, updated by humans. Ours is updated by agents as a side effect of doing the work, and lives next to the code.</td></tr>
+    <tr><td><b>Notion / wikis</b></td><td>Docs there go stale. Ours are the repo's own markdown, rendered live and versioned with the code.</td></tr>
+    <tr><td><b>Backstage &amp; dev portals</b></td><td>Heavy, org-wide, configured by platform teams. Ours is one folder and one command, for one person first.</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">06</span>Risks and how we'd handle them</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Risk</th><th>Mitigation</th></tr>
+    <tr><td><span class="tag red">high</span> Agent vendors build this natively</td><td>Be the open, multi-agent, file-based layer they can't be; make Grimoire the place where several agents' work meets.</td></tr>
+    <tr><td><span class="tag orange">med</span> Agents don't keep state true without being told</td><td>Measure it in dogfooding; strengthen the skill; add an activity feed and a "state check" the agent runs at the end of a task.</td></tr>
+    <tr><td><span class="tag orange">med</span> Team merge conflicts in board JSON</td><td>One file per card, or a git merge driver for <code>*.kanban.json</code>.</td></tr>
+    <tr><td><span class="tag orange">med</span> Local server + artifacts with scripts</td><td>Keep localhost-only, scoped writes and secret hiding; add a CSP; sandbox untrusted artifacts.</td></tr>
+    <tr><td><span class="tag yellow">low</span> It's a toy people try once</td><td>Kill criteria below. If we stop opening it ourselves, stop.</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">07</span>90-day plan <span class="saved" id="saved-p"></span></h2>
+  <div class="phases" id="plan"></div>
+</section>
+
+<section>
+  <h2><span class="n">08</span>How we'll know</h2>
+  <div class="grid">
+    <div class="stat"><b>Daily</b><span>we open Grimoire on our own repos, unprompted, for 3 weeks running</span></div>
+    <div class="stat"><b>&gt; 70%</b><span>of agent tasks leave the board true without a reminder</span></div>
+    <div class="stat"><b>10</b><span>outside users still using it after two weeks</span></div>
+    <div class="stat"><b>1</b><span>viewer or theme built by someone else</span></div>
+  </div>
+  <div class="callout danger"><b>Kill or pivot if:</b> after week 4 we're not opening it daily ourselves, or after week 8 nobody outside keeps it running past the first afternoon.</div>
+</section>
+
+<section>
+  <h2><span class="n">09</span>If it becomes a business</h2>
+  <div class="ladder">
+    <div class="card"><b>Free forever</b><span>The local tool, skill, viewers and themes. MIT. Everything single-player.</span></div>
+    <div class="card"><b>Team</b><span>Hosted share links, comments, sync across machines, SSO. Priced per seat, like any dev tool that grew up.</span></div>
+    <div class="card"><b>Ecosystem</b><span>A gallery of viewers and themes; maybe premium packs. More about reach than revenue.</span></div>
+  </div>
+  <p class="muted" style="margin-top:10px">Honest note: the business is the least certain part. The first 90 days are about whether people (starting with us) can't do without it.</p>
+</section>
+
+<section>
+  <h2><span class="n">10</span>The name <span class="saved" id="saved-n"></span></h2>
+  <div class="names" id="names"></div>
+</section>
+
+<section>
+  <h2><span class="n">11</span>Open questions</h2>
+  <ul class="checklist">
+    <li><input type="checkbox" disabled><div><b>Shared or per-window focus?</b> <span class="muted">Shared is great solo, odd for teams.</span></div></li>
+    <li><input type="checkbox" disabled><div><b>Should <code>.grimoire/</code> live in each repo or in one workspace?</b> <span class="muted">Probably both, merged (board card grim-022).</span></div></li>
+    <li><input type="checkbox" disabled><div><b>How much should the agent do unasked?</b> <span class="muted">Moving cards: yes. Changing health to "off-track": ask?</span></div></li>
+    <li><input type="checkbox" disabled><div><b>Contribute to Television instead?</b> <span class="muted">Their specs are excellent; files-first may be a mode for them, not a rival.</span></div></li>
+    <li><input type="checkbox" disabled><div><b>What's the one demo that sells it?</b> <span class="muted">Our bet: agent finishes a task → card slides to Done → dashboard ticks up → you approve from the board.</span></div></li>
+  </ul>
+</section>
+
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const code = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const STATUS_COLOR = { idea: "", exploring: "blue", committed: "green", parked: "yellow" };
+let data = null, filter = "all";
+
+async function load() { data = await grim.readJSON("ideas.json"); render(); }
+async function save(where, msg) {
+  await grim.writeJSON("ideas.json", data);
+  const el = document.getElementById(where);
+  el.textContent = `${msg} · saved`;
+  setTimeout(() => (el.textContent = ""), 1500);
+}
+const score = f => f.impact * 2 - f.effort;
+const dots = (n, label) => `<span class="dots" title="${label} ${n}/5">${label[0]} <b>${"●".repeat(n)}</b>${"○".repeat(5 - n)}</span>`;
+
+function render() {
+  const themes = [...new Set(data.features.map(f => f.theme))];
+  const opts = ["all", "starred", ...data.statuses, ...themes.map(t => "#" + t)];
+  document.getElementById("filters").innerHTML = opts.map(o => `<button class="chip${filter === o ? " on" : ""}" data-filter="${esc(o)}">${esc(o)}</button>`).join("");
+  const shown = data.features.filter(f => filter === "all" || (filter === "starred" && f.star) || f.status === filter || "#" + f.theme === filter)
+    .sort((a, b) => (b.star - a.star) || (score(b) - score(a)));
+  document.getElementById("ideas").innerHTML = shown.map(f => `
+    <div class="card idea ${esc(f.status)}" data-id="${esc(f.id)}">
+      <button class="star${f.star ? " on" : ""}" title="Star">${f.star ? "★" : "☆"}</button>
+      <h3>${esc(f.title)}</h3>
+      <p>${esc(f.pitch)}</p>
+      <div class="meta"><span class="tag ${STATUS_COLOR[f.status]} status" title="Click to change status">${esc(f.status)}</span><span class="tag">#${esc(f.theme)}</span>
+        ${dots(f.impact, "impact")} ${dots(f.effort, "effort")}<span class="score">${score(f)}</span></div>
+    </div>`).join("") || `<p class="muted">Nothing here.</p>`;
+
+  document.getElementById("plan").innerHTML = data.plan.map((p, pi) => {
+    const done = p.items.filter(i => i.done).length;
+    return `<div class="card phase"><h3>${esc(p.phase)}</h3><div class="progress"><i style="width:${(done / p.items.length) * 100}%"></i></div>
+      ${p.items.map((it, ii) => `<label class="${it.done ? "done" : ""}"><input type="checkbox" data-p="${pi}" data-i="${ii}"${it.done ? " checked" : ""}><span>${code(it.text)}</span></label>`).join("")}</div>`;
+  }).join("");
+
+  const max = Math.max(1, ...data.names.map(n => n.votes));
+  document.getElementById("names").innerHTML = data.names.map((n, i) => `
+    <div class="card name${n.votes === max && n.votes > 0 ? " pick" : ""}"><div><b>${esc(n.name)}</b><p>${esc(n.note)}</p></div>
+      <button class="btn vote" data-vote="${i}" title="Vote">▲ ${n.votes}</button></div>`).join("");
+}
+
+document.addEventListener("click", e => {
+  const chip = e.target.closest("[data-filter]");
+  if (chip) { filter = chip.dataset.filter; return render(); }
+  const card = e.target.closest(".idea");
+  if (card) {
+    const f = data.features.find(x => x.id === card.dataset.id);
+    if (e.target.closest(".star")) { f.star = !f.star; render(); return save("saved-f", f.star ? "Starred" : "Unstarred"); }
+    if (e.target.closest(".status")) {
+      f.status = data.statuses[(data.statuses.indexOf(f.status) + 1) % data.statuses.length];
+      render(); return save("saved-f", `${f.title} → ${f.status}`);
+    }
+  }
+  const vote = e.target.closest("[data-vote]");
+  if (vote) { const n = data.names[+vote.dataset.vote]; n.votes++; render(); return save("saved-n", `Voted ${n.name}`); }
+});
+document.addEventListener("change", e => {
+  const box = e.target.closest("[data-p]");
+  if (!box) return;
+  data.plan[+box.dataset.p].items[+box.dataset.i].done = box.checked;
+  render(); save("saved-p", box.checked ? "Done" : "Reopened");
+});
+
+// The agent can add ideas or tick plan items by editing ideas.json; re-read in place.
+grim.onChange(({ self, by }) => { if (self && by !== "ui") load(); });
+load();
+</script>
+</body>
+</html>

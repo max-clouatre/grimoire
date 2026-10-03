@@ -1,0 +1,111 @@
+/* Grimoire house style. Artifacts link it with:
+     <link rel="stylesheet" href="/grimoire/grimoire.css">
+   It only reads design tokens (tokens.css + the active theme, both injected by
+   Grimoire), so every artifact restyles when the theme changes. */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; color: var(--foreground); }
+/* The page surface sits on html so translucent themes don't stack it twice. */
+html { background: var(--page); min-height: 100%; }
+body {
+  font: var(--text-size)/1.55 var(--font-sans);
+  padding: 24px 28px;
+  text-shadow: var(--text-shadow);
+}
+h1, h2, h3 {
+  font-family: var(--font-heading); font-weight: var(--heading-weight); color: var(--heading-color);
+  text-transform: var(--heading-transform); letter-spacing: var(--heading-tracking); text-shadow: var(--heading-shadow);
+}
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 4px; }
+h2 { font-size: 17px; margin: 24px 0 8px; }
+h3 { font-size: 15px; margin: 18px 0 6px; }
+p { margin: 0 0 10px; }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--muted); border: 1px solid var(--border); padding: 0 4px; border-radius: calc(var(--radius) * 0.4); }
+hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+::selection { background: var(--accent-soft); }
+
+/* ---- Building blocks (documented in the Grimoire skill and the design system doc) ---- */
+.sub, .muted { color: var(--muted-foreground); font-size: 13px; }
+.sub { margin: 0 0 16px; }
+.card { border: var(--surface-border); border-radius: var(--radius); padding: 14px 16px; background: var(--surface); color: var(--card-foreground); }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.stack > * + * { margin-top: 10px; }
+.stat { border: var(--surface-border); border-radius: var(--radius); padding: 12px 14px; background: var(--surface); }
+.stat b { display: block; font-size: 24px; line-height: 1.2; font-family: var(--font-heading); }
+.stat span { color: var(--muted-foreground); font-size: 13px; }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--muted); border: 1px solid var(--border); color: var(--muted-foreground); text-shadow: none; }
+.tag.red { background: var(--red-soft); color: var(--red); border-color: transparent; }
+.tag.orange { background: var(--orange-soft); color: var(--orange); border-color: transparent; }
+.tag.yellow { background: var(--yellow-soft); color: var(--yellow); border-color: transparent; }
+.tag.green { background: var(--green-soft); color: var(--green); border-color: transparent; }
+.tag.blue { background: var(--blue-soft); color: var(--blue); border-color: transparent; }
+.tag.purple { background: var(--purple-soft); color: var(--purple); border-color: transparent; }
+.tag.teal { background: var(--teal-soft); color: var(--teal); border-color: transparent; }
+.callout { border-left: 3px solid var(--accent); background: var(--surface); padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; margin: 12px 0; }
+.callout.warn { border-color: var(--orange); }
+.callout.danger { border-color: var(--red); }
+.callout.ok { border-color: var(--green); }
+.btn { font: inherit; font-size: 14px; font-weight: 600; padding: 6px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--foreground); cursor: pointer; }
+.btn.primary { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
+.btn:hover { filter: brightness(1.08); }
+input[type="text"], textarea { font: inherit; color: var(--foreground); background: var(--background); border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 10px; }
+input:focus-visible, textarea:focus-visible, .btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+.progress { height: 8px; border-radius: 999px; background: var(--muted); overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--accent); border-radius: inherit; transition: width 400ms ease; }
+
+.checklist { list-style: none; padding: 0; margin: 0; }
+.checklist li { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.checklist li.done > :not(input) { text-decoration: line-through; color: var(--muted-foreground); }
+.checklist input, .prose input[type="checkbox"] { accent-color: var(--accent); }
+.checklist input { margin-top: 5px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: 12px; color: var(--muted-foreground); font-weight: 600; }
+.table-wrap { overflow-x: auto; margin: 0 0 14px; }
+
+.bars { display: flex; align-items: flex-end; gap: 10px; height: 180px; padding-top: 18px; margin-bottom: 26px; }
+.bars > div { flex: 1; background: var(--accent); border-radius: calc(var(--radius) * 0.6) calc(var(--radius) * 0.6) 0 0; position: relative; min-height: 2px; }
+.bars > div::before { content: attr(data-value); position: absolute; top: -18px; left: 0; right: 0; text-align: center; font-size: 12px; }
+.bars > div::after { content: attr(data-label); position: absolute; bottom: -20px; left: 0; right: 0; text-align: center; font-size: 12px; color: var(--muted-foreground); }
+
+/* ---- Markdown ---- */
+.prose { max-width: 780px; }
+.prose h1 { margin-bottom: 12px; }
+.prose ul, .prose ol { padding-left: 22px; margin: 0 0 12px; }
+.prose li { margin: 3px 0; }
+.prose li.task { list-style: none; margin-left: -20px; }
+.prose li.task > input { margin-right: 6px; }
+[data-grim-markdown] li.task > input { cursor: pointer; }
+.prose pre { background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+.prose pre code { background: none; border: 0; padding: 0; }
+.prose blockquote { margin: 0 0 12px; padding: 4px 14px; border-left: 3px solid var(--border); color: var(--muted-foreground); }
+.prose img { max-width: 100%; }
+
+/* ---- Repo / folder view ---- */
+body:has(.repo), body:has(.repo-main.solo) { padding: 0; }
+.repo { display: grid; grid-template-columns: minmax(170px, 30%) 1fr; height: 100vh; }
+.repo-tree { position: relative; border-right: 1px solid var(--border); background: var(--surface); overflow: auto; padding: 10px 6px 20px; font-size: 13px; }
+.repo-name { font-weight: 700; padding: 4px 10px 10px; font-size: 14px; font-family: var(--font-heading); }
+.repo-tree a { display: block; padding: 2px 8px 2px calc(10px + var(--d) * 12px); color: var(--foreground); text-decoration: none; border-radius: calc(var(--radius) * 0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.repo-tree a[hidden] { display: none; }
+.repo-tree a:hover { background: var(--hover); }
+.repo-tree a.on { background: var(--accent); color: var(--background); text-shadow: none; }
+.repo-tree a.d::before { content: "▸"; display: inline-block; width: 12px; color: var(--muted-foreground); }
+.repo-tree a.d.open::before { content: "▾"; }
+.repo-tree a.f::before { content: ""; display: inline-block; width: 12px; }
+.repo-main { overflow: auto; padding: 18px 24px 40px; min-width: 0; }
+.repo-main.solo { height: 100vh; }
+.crumbs { font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px; font-family: var(--font-mono); }
+.crumbs span { opacity: 0.5; }
+.code { margin: 0; font: 12.5px/1.55 var(--font-mono); background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 0; overflow-x: auto; }
+.code code { background: none; border: 0; padding: 0; font-size: inherit; }
+.code .ln { display: inline-block; width: 44px; padding-right: 12px; text-align: right; color: var(--muted-foreground); opacity: 0.6; user-select: none; }
+.file-img { max-width: 100%; border-radius: var(--radius); border: 1px solid var(--border); }
+.empty-note { color: var(--muted-foreground); padding: 40px 0; text-align: center; }
+@media (max-width: 560px) {
+  .repo { grid-template-columns: 1fr; grid-template-rows: 34vh 1fr; }
+  .repo-tree { border-right: 0; border-bottom: 1px solid var(--border); }
+}

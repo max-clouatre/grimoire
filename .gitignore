@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+# Per-session hook state, if a workspace is ever created inside the repo
+.grimoire/.state/
+starter/.grimoire/.state/

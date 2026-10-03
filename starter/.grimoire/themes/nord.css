@@ -1,0 +1,44 @@
+/*
+  @name Nord
+  @description Arctic, north-bluish calm
+  @modes light dark
+*/
+
+:root {
+  --background: #eceff4;
+  --foreground: #2e3440;
+  --card: #e5e9f0;
+  --muted: #e5e9f0;
+  --muted-foreground: #4c566a;
+  --primary: #5e81ac;
+  --primary-foreground: #eceff4;
+  --accent: #5e81ac;
+  --border: #d8dee9;
+  --radius: 8px;
+
+  --red: #bf616a; --orange: #d08770; --yellow: #ebcb8b; --green: #a3be8c;
+  --blue: #5e81ac; --purple: #b48ead; --teal: #88c0d0;
+
+  --wallpaper: linear-gradient(160deg, #d8dee9, #e5e9f0 60%, #eceff4);
+  --sidebar: #e5e9f0;
+  --sidebar-accent: #d8dee9;
+  --overlay: rgba(236, 239, 244, 0.8);
+}
+
+:root[data-mode="dark"] {
+  --background: #2e3440;
+  --foreground: #eceff4;
+  --card: #3b4252;
+  --muted: #3b4252;
+  --muted-foreground: #d8dee9;
+  --primary: #88c0d0;
+  --primary-foreground: #2e3440;
+  --accent: #88c0d0;
+  --border: #434c5e;
+
+  --wallpaper: linear-gradient(160deg, #242933, #2e3440 60%, #3b4252);
+  --sidebar: #272c36;
+  --sidebar-accent: #3b4252;
+  --overlay: rgba(46, 52, 64, 0.8);
+  --frame-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}

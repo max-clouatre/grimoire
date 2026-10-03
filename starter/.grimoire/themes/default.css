@@ -1,0 +1,93 @@
+/*
+  @name Default
+  @description Clean neutral, shadcn-style
+  @modes light dark
+
+  ─────────────────────────────────────────────────────────────────────────────
+  This file is the template for every Grimoire theme. To make your own:
+
+    1. Copy it to .grimoire/themes/<your-theme>.css
+    2. Change @name / @description above, and the variables below
+    3. It appears in the theme picker instantly — pick it there
+
+  Every variable is optional: anything you delete falls back to the defaults
+  in grimoire/lib/tokens.css. @modes lists the modes your theme supports — "dark"
+  alone hides the light/dark switch. Put dark values under
+  :root[data-mode="dark"]. Fonts: @import a Google Font at the top of the file.
+
+  Optional: add <your-theme>.bg.js beside this file and it runs in a sandboxed,
+  full-size <canvas id="c"> behind the stage (see matrix.bg.js). It gets
+  window.GRIM = { mode, tokens: { background, foreground, primary, accent, … } }.
+  ─────────────────────────────────────────────────────────────────────────────
+*/
+
+:root {
+  /* Core colors */
+  --background: #ffffff;          /* base color behind artifact content */
+  --foreground: #0a0a0a;          /* body text */
+  --card: #f7f7f8;                /* panels inside artifacts */
+  --muted: #f4f4f5;               /* subtle fills: code, tags, progress tracks */
+  --muted-foreground: #71717a;    /* secondary text */
+  --primary: #18181b;             /* primary buttons, active tab */
+  --primary-foreground: #fafafa;
+  --accent: #2563eb;              /* links, highlights, focus rings, charts */
+  --border: #e4e4e7;
+  --radius: 10px;
+
+  /* Type */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  --text-size: 15px;
+  --heading-weight: 700;
+  --heading-transform: none;      /* e.g. uppercase */
+  --heading-tracking: -0.01em;
+  --heading-color: var(--foreground);
+  --text-shadow: none;            /* e.g. 0 0 6px green for a glow */
+  --heading-shadow: none;
+
+  /* Status palette (tags, calendar, charts) */
+  --red: #ef4444; --orange: #f97316; --yellow: #eab308; --green: #22c55e;
+  --blue: #3b82f6; --purple: #8b5cf6; --teal: #14b8a6;
+
+  /* Surfaces: any CSS background works here, including gradients and images */
+  --page: var(--background);      /* an artifact's page */
+  --surface: var(--card);         /* .card / .stat / board columns */
+  --surface-border: 1px solid var(--border);
+
+  /* App chrome */
+  --wallpaper: #f4f4f5;           /* behind the stage */
+  --sidebar: #fafafa;
+  --sidebar-foreground: var(--foreground);
+  --sidebar-muted: var(--muted-foreground);
+  --sidebar-accent: #ececee;      /* selected channel */
+  --sidebar-border: var(--border);
+  --overlay: rgba(255, 255, 255, 0.72);   /* tab strip + buttons over the wallpaper */
+  --overlay-foreground: var(--foreground);
+  --overlay-blur: 12px;
+  --tab-active: var(--primary);
+  --tab-active-foreground: var(--primary-foreground);
+  --frame: var(--page);           /* artifact frame */
+  --frame-border: 1px solid var(--border);
+  --frame-radius: 12px;
+  --frame-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 10px 30px rgba(0, 0, 0, 0.08);
+  --titlebar: var(--muted);
+  --titlebar-foreground: var(--muted-foreground);
+}
+
+:root[data-mode="dark"] {
+  --background: #0a0a0b;
+  --foreground: #fafafa;
+  --card: #141416;
+  --muted: #1c1c1f;
+  --muted-foreground: #a1a1aa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --accent: #60a5fa;
+  --border: #27272a;
+  --wallpaper: #050506;
+  --sidebar: #0e0e10;
+  --sidebar-accent: #1f1f23;
+  --overlay: rgba(24, 24, 27, 0.72);
+  --frame-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 10px 30px rgba(0, 0, 0, 0.5);
+}

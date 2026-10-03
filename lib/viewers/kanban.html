@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link rel="stylesheet" href="/grimoire/grimoire.css">
+<style>
+  body { padding: 18px 0 0; display: flex; flex-direction: column; height: 100vh; min-height: 0; }
+  header { padding: 0 20px 12px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  header h1 { font-size: 22px; margin: 0; }
+  .saved { margin-left: auto; font-size: 12px; color: var(--muted-foreground); transition: color 300ms; }
+  .saved.on { color: var(--green); }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 20px 12px; }
+  .filters button { font: inherit; font-size: 12px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--muted-foreground); cursor: pointer; }
+  .filters button.on { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
+  .board { flex: 1; min-height: 0; display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 20px; }
+  .col { flex: 0 0 248px; display: flex; flex-direction: column; min-height: 0; background: var(--surface); border: var(--surface-border); border-radius: var(--radius); }
+  .col h2 { margin: 0; padding: 10px 12px 8px; font-size: 13px; display: flex; gap: 8px; align-items: center; }
+  .col h2 .n { font-family: var(--font-sans); font-weight: 600; font-size: 11px; color: var(--muted-foreground); background: var(--muted); border-radius: 999px; padding: 0 7px; }
+  .cards { flex: 1; overflow-y: auto; padding: 2px 8px 8px; display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
+  .col.over { outline: 2px dashed var(--accent); outline-offset: -2px; }
+  .card { position: relative; background: var(--page); border: 1px solid var(--border); border-radius: calc(var(--radius) * 0.8); padding: 8px 10px; cursor: grab; font-size: 13.5px; line-height: 1.35; }
+  .card:hover { border-color: var(--accent); }
+  .card.dragging { opacity: 0.4; }
+  .card .t { font-weight: 600; padding-right: 14px; }
+  .card .meta { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+  .card .owner { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 700; background: var(--accent-soft); color: var(--accent); text-shadow: none; }
+  .card .notes { display: none; margin-top: 6px; color: var(--muted-foreground); font-size: 12.5px; white-space: pre-wrap; }
+  .card.open .notes { display: block; }
+  .card .x { position: absolute; top: 4px; right: 6px; border: 0; background: none; color: var(--muted-foreground); cursor: pointer; opacity: 0; font-size: 14px; }
+  .card:hover .x { opacity: 0.7; }
+  .card.flash { animation: flash 1.2s ease; }
+  @keyframes flash { from { box-shadow: 0 0 0 3px var(--green); } }
+  .ms { font-size: 10.5px; font-weight: 700; padding: 0 6px; border-radius: 4px; background: var(--muted); color: var(--muted-foreground); text-shadow: none; }
+  .add { margin: 0 8px 8px; }
+  .add input { width: 100%; font-size: 13px; }
+  .add button { width: 100%; text-align: left; font: inherit; font-size: 13px; color: var(--muted-foreground); background: none; border: 0; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+  .add button:hover { background: var(--hover); }
+  .err { color: var(--red); padding: 20px; }
+</style>
+</head>
+<body>
+<header><h1 id="title"></h1><span class="muted" id="count"></span><span class="saved" id="saved"></span></header>
+<div class="filters" id="filters"></div>
+<div class="board" id="board"></div>
+
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const TAG_COLORS = ["blue", "purple", "teal", "orange", "green", "yellow"];
+const tagColor = t => t === "blocked" ? "red" : t === "bug" ? "orange" : TAG_COLORS[[...t].reduce((h, c) => h + c.charCodeAt(0), 0) % TAG_COLORS.length];
+
+let data = null, dragging = null, filter = null, before = new Map();
+
+async function load() {
+  try { data = await grim.readJSON(); }
+  catch (e) { document.getElementById("board").innerHTML = `<div class="err">Could not read the board file: ${esc(e.message)}</div>`; return; }
+  data.columns ||= [{ id: "todo", name: "To do" }, { id: "doing", name: "Doing" }, { id: "done", name: "Done" }];
+  data.cards ||= [];
+  render();
+}
+
+async function save(note = "Saved") {
+  const el = document.getElementById("saved");
+  try { await grim.writeJSON(data); el.textContent = `${note} · ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`; el.classList.add("on"); setTimeout(() => el.classList.remove("on"), 900); }
+  catch (e) { el.textContent = "Save failed: " + e.message; }
+}
+
+function render() {
+  document.getElementById("title").textContent = data.title || "Board";
+  document.getElementById("count").textContent = `${data.cards.length} cards`;
+  const milestones = [...new Set(data.cards.map(c => c.milestone).filter(Boolean))].sort();
+  document.getElementById("filters").innerHTML = milestones.length
+    ? [`<button data-ms="" class="${filter ? "" : "on"}">All</button>`, ...milestones.map(m => `<button data-ms="${esc(m)}" class="${filter === m ? "on" : ""}">${esc(m)}</button>`)].join("")
+    : "";
+  const now = new Map(data.cards.map(c => [c.id, c.column]));
+  document.getElementById("board").innerHTML = data.columns.map(col => {
+    const cards = data.cards.filter(c => c.column === col.id && (!filter || c.milestone === filter));
+    return `<section class="col" data-col="${esc(col.id)}">
+      <h2>${esc(col.name)} <span class="n">${cards.length}</span></h2>
+      <div class="cards">${cards.map(c => `
+        <article class="card${before.size && before.get(c.id) !== c.column ? " flash" : ""}" draggable="true" data-id="${esc(c.id)}">
+          <button class="x" title="Delete card" data-del="${esc(c.id)}">×</button>
+          <div class="t">${esc(c.title)}</div>
+          <div class="meta">${c.milestone ? `<span class="ms">${esc(c.milestone)}</span>` : ""}${(c.tags || []).map(t => `<span class="tag ${tagColor(t)}">${esc(t)}</span>`).join("")}
+            ${c.owner ? `<span class="owner" title="${esc(c.owner)}">${esc(c.owner.slice(0, 2).toUpperCase())}</span>` : ""}</div>
+          ${c.notes ? `<div class="notes">${esc(c.notes)}</div>` : ""}
+        </article>`).join("")}</div>
+      <div class="add"><button data-add="${esc(col.id)}">+ Add card</button></div>
+    </section>`;
+  }).join("");
+  before = now;
+}
+
+const board = document.getElementById("board");
+document.getElementById("filters").onclick = e => { const b = e.target.closest("[data-ms]"); if (b) { filter = b.dataset.ms || null; render(); } };
+
+board.addEventListener("click", e => {
+  const del = e.target.closest("[data-del]");
+  if (del) {
+    const card = data.cards.find(c => c.id === del.dataset.del);
+    if (confirm(`Delete "${card.title}"?`)) { data.cards = data.cards.filter(c => c !== card); render(); save("Deleted"); }
+    return;
+  }
+  const add = e.target.closest("[data-add]");
+  if (add) {
+    const wrap = add.parentElement;
+    wrap.innerHTML = `<input type="text" placeholder="Card title, then Enter">`;
+    const input = wrap.querySelector("input");
+    input.focus();
+    input.onkeydown = ev => {
+      if (ev.key === "Escape") render();
+      if (ev.key !== "Enter" || !input.value.trim()) return;
+      const prefix = (data.idPrefix || "card");
+      const n = Math.max(0, ...data.cards.map(c => parseInt(String(c.id).split("-").pop()) || 0)) + 1;
+      data.cards.push({ id: `${prefix}-${String(n).padStart(3, "0")}`, title: input.value.trim(), column: add.dataset.add, ...(filter ? { milestone: filter } : {}), tags: [] });
+      render(); save("Added");
+    };
+    input.onblur = () => setTimeout(() => { if (document.activeElement !== input) render(); }, 100);
+    return;
+  }
+  const card = e.target.closest(".card");
+  if (card) card.classList.toggle("open");
+});
+
+board.addEventListener("dragstart", e => {
+  const card = e.target.closest(".card");
+  if (!card) return;
+  dragging = card.dataset.id;
+  card.classList.add("dragging");
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/plain", dragging);
+});
+board.addEventListener("dragend", () => { dragging = null; document.querySelectorAll(".dragging, .over").forEach(x => x.classList.remove("dragging", "over")); });
+board.addEventListener("dragover", e => {
+  const col = e.target.closest(".col");
+  if (!col || !dragging) return;
+  e.preventDefault();
+  document.querySelectorAll(".col.over").forEach(x => x !== col && x.classList.remove("over"));
+  col.classList.add("over");
+});
+board.addEventListener("drop", e => {
+  const col = e.target.closest(".col");
+  if (!col || !dragging) return;
+  e.preventDefault();
+  const card = data.cards.find(c => c.id === dragging);
+  // Insert before the card under the pointer, keeping the file's order meaningful.
+  const after = [...col.querySelectorAll(".card:not(.dragging)")].find(el => e.clientY < el.getBoundingClientRect().top + el.offsetHeight / 2);
+  data.cards = data.cards.filter(c => c !== card);
+  card.column = col.dataset.col;
+  const idx = after ? data.cards.findIndex(c => c.id === after.dataset.id) : -1;
+  if (idx >= 0) data.cards.splice(idx, 0, card); else data.cards.push(card);
+  dragging = null;
+  render();
+  save(`Moved to ${data.columns.find(c => c.id === card.column)?.name}`);
+});
+
+// Edits from the agent (or an editor) arrive as file changes: re-read and re-render in place.
+grim.onChange(({ self }) => { if (self && !dragging) load(); });
+load();
+</script>
+</body>
+</html>

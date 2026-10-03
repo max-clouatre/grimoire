@@ -1,0 +1,284 @@
+{
+  "statuses": [
+    "idea",
+    "exploring",
+    "committed",
+    "parked"
+  ],
+  "features": [
+    {
+      "id": "f01",
+      "title": "Activity feed",
+      "pitch": "First version shipped as Sessions: a self-written daily log per project, kept by hooks and the agent. Next: a cross-project activity view.",
+      "impact": 5,
+      "effort": 2,
+      "theme": "trust",
+      "status": "committed",
+      "star": true
+    },
+    {
+      "id": "f02",
+      "title": "\"Since you last looked\" briefing",
+      "pitch": "Open Grimoire after a break and get a generated summary: cards moved, decisions made, files touched, what's waiting on you. The agent writes it from the activity feed and git.",
+      "impact": 5,
+      "effort": 2,
+      "theme": "trust",
+      "status": "idea",
+      "star": true
+    },
+    {
+      "id": "f03",
+      "title": "Review lane",
+      "pitch": "Agents finish work into a Review column with a diff summary; you approve or bounce from the board. Approval writes back, the agent sees it next turn. Human-in-the-loop without a chat transcript.",
+      "impact": 5,
+      "effort": 3,
+      "theme": "workflow",
+      "status": "exploring",
+      "star": false
+    },
+    {
+      "id": "f04",
+      "title": "Git-aware repo view",
+      "pitch": "Branch, recent commits, uncommitted changes and per-file diffs inside the repo view. Read-only git commands only.",
+      "impact": 4,
+      "effort": 2,
+      "theme": "workflow",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f05",
+      "title": "Comments the agent can read",
+      "pitch": "Select text in any artifact and leave a comment. It lands in _comments.json beside the artifact, so your agent picks it up and replies or fixes it. Review docs the way you review PRs.",
+      "impact": 5,
+      "effort": 3,
+      "theme": "two-way",
+      "status": "idea",
+      "star": true
+    },
+    {
+      "id": "f06",
+      "title": "Test + CI viewer",
+      "pitch": "*.tests.json (or JUnit XML) renders as a pass/fail wall; a CI status file shows the last runs. The dashboard's health can read it.",
+      "impact": 4,
+      "effort": 2,
+      "theme": "viewers",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f07",
+      "title": "Chart viewer",
+      "pitch": "*.chart.json or a CSV with a sidecar spec renders as a themed chart. Agents stop hand-writing SVG.",
+      "impact": 3,
+      "effort": 2,
+      "theme": "viewers",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f08",
+      "title": "Diagram viewer",
+      "pitch": "Boxes-and-arrows from a tiny text format, themed and live. Architecture docs that redraw when the agent edits them.",
+      "impact": 3,
+      "effort": 3,
+      "theme": "viewers",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f09",
+      "title": "Live dev-server tabs",
+      "pitch": "A .link to localhost:3000 with a health dot, auto-reconnect and the server's log one click away. The running app sits beside its board and docs.",
+      "impact": 4,
+      "effort": 1,
+      "theme": "workflow",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f10",
+      "title": "One channel per agent",
+      "pitch": "When several agents work at once, each gets a channel showing its current task, files and questions. Mission control for multi-agent runs.",
+      "impact": 4,
+      "effort": 3,
+      "theme": "agents",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f11",
+      "title": "Daily standup artifact",
+      "pitch": "Every morning the agent writes yesterday / today / blocked from the board, git and the activity feed. Shareable with a team as-is.",
+      "impact": 3,
+      "effort": 1,
+      "theme": "agents",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f12",
+      "title": "Questions inbox",
+      "pitch": "Agents park questions in _questions.json instead of stopping. You answer from Grimoire, in any order; answers flow back as files.",
+      "impact": 5,
+      "effort": 2,
+      "theme": "two-way",
+      "status": "idea",
+      "star": true
+    },
+    {
+      "id": "f13",
+      "title": "Theme gallery + sharing",
+      "pitch": "Browse, preview and install themes from a gallery; share yours as one CSS file. The fun on-ramp that gets people to try it.",
+      "impact": 3,
+      "effort": 2,
+      "theme": "delight",
+      "status": "idea",
+      "star": false
+    },
+    {
+      "id": "f14",
+      "title": "Phone glance",
+      "pitch": "A read-only tunnel with a token so you can check the board and activity from your phone while the agent works.",
+      "impact": 3,
+      "effort": 3,
+      "theme": "reach",
+      "status": "parked",
+      "star": false
+    },
+    {
+      "id": "f15",
+      "title": "Editor panels",
+      "pitch": "VS Code / JetBrains panel showing the current channel next to your code. Same server, no new concepts.",
+      "impact": 3,
+      "effort": 3,
+      "theme": "reach",
+      "status": "parked",
+      "star": false
+    },
+    {
+      "id": "f16",
+      "title": "MCP server (optional)",
+      "pitch": "For harnesses without good file tools: tv_create, tv_focus, tv_update tools that just write the same files. Files stay the source of truth.",
+      "impact": 3,
+      "effort": 1,
+      "theme": "reach",
+      "status": "idea",
+      "star": false
+    }
+  ],
+  "plan": [
+    {
+      "phase": "Weeks 1–2 · Make it installable",
+      "items": [
+        {
+          "text": "`npx Grimoire init`: create .grimoire/, install the skill for Claude Code, Codex and others",
+          "done": false
+        },
+        {
+          "text": "Tests for the server, markdown renderer and write rules",
+          "done": false
+        },
+        {
+          "text": "Run on macOS, Linux and Windows; fix path edge cases",
+          "done": false
+        },
+        {
+          "text": "README with a 30-second demo GIF (theme switch + agent updating the board)",
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "Weeks 3–4 · Dogfood for real",
+      "items": [
+        {
+          "text": "Put Grimoire on 3 real repos: Grimoire, deck, json-render-app",
+          "done": false
+        },
+        {
+          "text": "Ship the activity feed (f01): it's what makes agent work legible",
+          "done": false
+        },
+        {
+          "text": "Keep a diary in learnings.md: when did we open Grimoire, and when didn't we?",
+          "done": false
+        },
+        {
+          "text": "Measure: does the agent keep the board true without being asked?",
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "Weeks 5–8 · Show people",
+      "items": [
+        {
+          "text": "Ship the questions inbox (f12) and comments (f05)",
+          "done": false
+        },
+        {
+          "text": "Show HN / r/ClaudeAI / agent Discords with the demo",
+          "done": false
+        },
+        {
+          "text": "Talk to 10 people who use coding agents daily; watch them install it",
+          "done": false
+        },
+        {
+          "text": "Reach out to Telepath (Television) — compare notes, maybe contribute upstream",
+          "done": false
+        }
+      ]
+    },
+    {
+      "phase": "Weeks 9–12 · Decide",
+      "items": [
+        {
+          "text": "Write the viewer spec v0.1 so others can build viewers",
+          "done": false
+        },
+        {
+          "text": "Decide: stay a free OSS tool, or build hosted sharing for teams",
+          "done": false
+        },
+        {
+          "text": "Go / pivot / park review against the kill criteria",
+          "done": false
+        }
+      ]
+    }
+  ],
+  "names": [
+    {
+      "name": "Grimoire",
+      "note": "Chosen Oct 2. A book of spells: skills are spells, artifacts are pages, sessions write the history. CLI: grim.",
+      "votes": 1
+    },
+    {
+      "name": "Glance",
+      "note": "The early favourite: names the habit. Already used by a popular self-hosted dashboard.",
+      "votes": 0
+    },
+    {
+      "name": "Tome",
+      "note": "Each project a tome. Strong and simple; an AI presentation startup uses it.",
+      "votes": 0
+    },
+    {
+      "name": "Lore",
+      "note": "Everything a project knows. Great fit, shortlisted.",
+      "votes": 0
+    },
+    {
+      "name": "Quire",
+      "note": "A gathering of pages bound into a book. Rare and exact.",
+      "votes": 0
+    },
+    {
+      "name": "tv",
+      "note": "The working name, after Television. Retired: this idea is our own now.",
+      "votes": 0
+    }
+  ]
+}

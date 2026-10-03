@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": 4,
+      "title": "Review ADR 0004 with Claude",
+      "done": false,
+      "due": "2026-10-02"
+    },
+    {
+      "id": 3,
+      "title": "Try Checkmate on a phone",
+      "done": false,
+      "due": null
+    },
+    {
+      "id": 2,
+      "title": "Write release notes for 0.3",
+      "done": true,
+      "due": "2026-09-28"
+    },
+    {
+      "id": 1,
+      "title": "Ship due dates",
+      "done": true,
+      "due": null
+    }
+  ]
+}

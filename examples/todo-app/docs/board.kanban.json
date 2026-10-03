@@ -1,0 +1,29 @@
+{
+  "title": "Checkmate · board",
+  "idPrefix": "CM",
+  "columns": [
+    { "id": "backlog", "name": "Backlog" },
+    { "id": "next", "name": "Up next" },
+    { "id": "doing", "name": "In progress" },
+    { "id": "done", "name": "Done" }
+  ],
+  "cards": [
+    { "id": "CM-014", "title": "Drag to reorder", "column": "doing", "milestone": "M2", "tags": ["ui", "blocked"], "owner": "max", "notes": "Blocked on ADR 0004 (position column vs fractional index)." },
+    { "id": "CM-015", "title": "Decide ordering strategy (ADR 0004)", "column": "doing", "milestone": "M2", "tags": ["decision"], "owner": "claude" },
+    { "id": "CM-016", "title": "Undo delete toast", "column": "next", "milestone": "M2", "tags": ["ui"] },
+    { "id": "CM-017", "title": "Accessibility pass", "column": "next", "milestone": "M2", "tags": ["a11y"], "notes": "Focus order after delete; labels for checkboxes; reduced motion." },
+    { "id": "CM-018", "title": "Service worker + IndexedDB cache", "column": "backlog", "milestone": "M3", "tags": ["offline"] },
+    { "id": "CM-019", "title": "Offline sync queue", "column": "backlog", "milestone": "M3", "tags": ["offline"] },
+    { "id": "CM-020", "title": "Export to Markdown", "column": "backlog", "milestone": "M3", "tags": ["data"] },
+    { "id": "CM-021", "title": "Import from Markdown", "column": "backlog", "milestone": "M3", "tags": ["data"] },
+    { "id": "CM-022", "title": "Landing page", "column": "backlog", "milestone": "M4", "tags": ["marketing"] },
+    { "id": "CM-023", "title": "Error tracking", "column": "backlog", "milestone": "M4", "tags": ["ops"] },
+    { "id": "CM-013", "title": "Fix: completed items reappear after refresh", "column": "done", "milestone": "M2", "tags": ["bug"], "owner": "claude", "notes": "Race between optimistic toggle and list refresh. See ADR 0002." },
+    { "id": "CM-012", "title": "Keyboard shortcuts", "column": "done", "milestone": "M2", "tags": ["ui"], "owner": "max" },
+    { "id": "CM-011", "title": "Due dates + overdue badges", "column": "done", "milestone": "M2", "tags": ["ui"], "owner": "max" },
+    { "id": "CM-004", "title": "API tests for CRUD", "column": "done", "milestone": "M1", "tags": ["tests"], "owner": "claude" },
+    { "id": "CM-003", "title": "Clear completed", "column": "done", "milestone": "M1", "tags": ["ui"], "owner": "max" },
+    { "id": "CM-002", "title": "SQLite persistence", "column": "done", "milestone": "M1", "tags": ["backend"], "owner": "claude" },
+    { "id": "CM-001", "title": "Add / toggle / delete", "column": "done", "milestone": "M1", "tags": ["ui"], "owner": "max" }
+  ]
+}

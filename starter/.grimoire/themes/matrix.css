@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
+/*
+  @name Matrix
+  @description Wake up, Neo. Digital rain included.
+  @modes dark
+*/
+
+:root {
+  --background: #000a03;
+  --foreground: #a6ffb8;
+  --card: #021a09;
+  --muted: #03200c;
+  --muted-foreground: #3fbf5f;
+  --primary: #00ff41;
+  --primary-foreground: #001a06;
+  --accent: #00ff41;
+  --border: #0d5a22;
+  --radius: 2px;
+
+  --font-sans: "Share Tech Mono", ui-monospace, Consolas, monospace;
+  --font-heading: var(--font-sans);
+  --font-mono: var(--font-sans);
+  --heading-transform: uppercase;
+  --heading-tracking: 0.08em;
+  --heading-color: #00ff41;
+  --text-shadow: 0 0 5px rgba(0, 255, 65, 0.35);
+  --heading-shadow: 0 0 10px rgba(0, 255, 65, 0.9);
+
+  --red: #ff3b3b; --orange: #c6ff00; --yellow: #e6ff5c; --green: #00ff41;
+  --blue: #00e5ff; --purple: #7dff9a; --teal: #00ffa8;
+
+  /* Translucent pages let the rain fall faintly behind your work. */
+  --page: rgba(0, 8, 3, 0.9);
+  --surface: rgba(0, 40, 14, 0.55);
+  --surface-border: 1px solid #0d5a22;
+
+  --wallpaper: #000;
+  --sidebar: #010c04;
+  --sidebar-foreground: #7dff9a;
+  --sidebar-muted: #2f9c4c;
+  --sidebar-accent: #04260d;
+  --sidebar-border: #0b3d18;
+  --overlay: rgba(0, 18, 6, 0.8);
+  --overlay-foreground: #7dff9a;
+  --tab-active: #00ff41;
+  --tab-active-foreground: #001a06;
+  --frame: transparent;
+  --frame-border: 1px solid #00ff41;
+  --frame-radius: 2px;
+  --frame-shadow: 0 0 18px rgba(0, 255, 65, 0.25), inset 0 0 0 1px rgba(0, 255, 65, 0.1);
+  --titlebar: #021a09;
+  --titlebar-foreground: #3fbf5f;
+}

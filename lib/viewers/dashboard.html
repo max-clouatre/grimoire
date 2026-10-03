@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link rel="stylesheet" href="/grimoire/grimoire.css">
+<style>
+  .head { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+  .health { cursor: pointer; font-size: 12px; padding: 3px 10px; }
+  .overall { margin: 16px 0 6px; display: flex; justify-content: space-between; font-size: 13px; color: var(--muted-foreground); }
+  .overall b { color: var(--foreground); }
+  .ms { display: grid; grid-template-columns: 54px 1fr auto; gap: 4px 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .ms .id { font-weight: 700; font-family: var(--font-heading); }
+  .ms .name { font-weight: 600; }
+  .ms .goal { grid-column: 2 / 4; font-size: 13px; color: var(--muted-foreground); }
+  .ms .pct { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--muted-foreground); }
+  .ms .progress { grid-column: 2 / 4; }
+  .ms.current .id::after { content: " ◂"; color: var(--accent); }
+  .ms.complete .progress > i { background: var(--green); }
+  .list { list-style: none; padding: 0; margin: 0; }
+  .list li { padding: 7px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: baseline; font-size: 14px; }
+  .list li .muted { margin-left: auto; white-space: nowrap; }
+  .list a { cursor: pointer; text-decoration: none; }
+  .list a:hover { text-decoration: underline; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 28px; }
+  .jump { font-size: 12px; font-weight: 600; margin-left: 8px; cursor: pointer; color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="root"><p class="muted">Loading…</p></div>
+
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const HEALTH = { "on-track": ["green", "On track"], "at-risk": ["yellow", "At risk"], "off-track": ["red", "Off track"] };
+const pretty = n => n.replace(/\.md$/i, "").replace(/^\d+[-_ ]*/, "").replace(/[-_]+/g, " ").replace(/^./, c => c.toUpperCase());
+let cfg = null;
+
+const jump = (id, label) => id ? `<span class="jump" data-focus="${esc(id)}">${label} →</span>` : "";
+
+async function render() {
+  cfg = await grim.readJSON();
+  let board = { columns: [], cards: [] }, decisions = [];
+  try { if (cfg.board) board = await grim.peer(cfg.board).readJSON(); } catch {}
+  try { if (cfg.decisions) decisions = (await grim.peer(cfg.decisions).list()).filter(e => !e.dir && /\.md$/i.test(e.name) && !/^readme/i.test(e.name)); } catch {}
+  let session = [];
+  try {
+    if (cfg.sessions) {
+      const d = new Date(), day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      session = (await grim.peer(cfg.sessions).read(`${day}.session.jsonl`)).split(/\r?\n/).filter(Boolean).map(l => JSON.parse(l));
+    }
+  } catch {}
+  const lastAt = session.length ? new Date(session.at(-1).last || session.at(-1).t) : null;
+  const ago = lastAt ? Math.round((Date.now() - lastAt) / 60000) : null;
+  const notes = session.filter(e => e.kind !== "change").slice(-4).reverse();
+  const sessionHtml = cfg.sessions ? `
+    <h2>Today's session ${jump(cfg.sessions, "log")}</h2>
+    <p class="muted" style="margin:-2px 0 6px">${session.length ? `${session.length} entries · last activity ${ago < 1 ? "just now" : ago < 60 ? `${ago} min ago` : `${Math.round(ago / 60)} h ago`}` : "Nothing logged yet today."}</p>
+    <ul class="list">${notes.map(e => `<li><span class="tag ${{ decision: "purple", blocker: "red", question: "yellow", done: "green", finding: "teal" }[e.kind] || ""}">${esc(e.kind)}</span> ${esc(e.text)}<span class="muted">${new Date(e.t).toTimeString().slice(0, 5)}</span></li>`).join("")}</ul>` : "";
+
+  const cards = board.cards || [];
+  const doneCol = cfg.doneColumn || "done", doingCol = cfg.doingColumn || "doing";
+  const done = cards.filter(c => c.column === doneCol).length;
+  const pct = cards.length ? Math.round((done / cards.length) * 100) : 0;
+  const doing = cards.filter(c => c.column === doingCol);
+  const blocked = cards.filter(c => (c.tags || []).includes("blocked") && c.column !== doneCol);
+  const [hColor, hLabel] = HEALTH[cfg.health?.status] || HEALTH["on-track"];
+
+  let currentFound = false;
+  const ms = (cfg.milestones || []).map(m => {
+    const mine = cards.filter(c => c.milestone === m.id);
+    const d = mine.filter(c => c.column === doneCol).length;
+    const p = mine.length ? Math.round((d / mine.length) * 100) : 0;
+    const complete = mine.length > 0 && d === mine.length;
+    const current = !complete && !currentFound && (currentFound = true);
+    return `<div class="ms${current ? " current" : ""}${complete ? " complete" : ""}">
+      <span class="id">${esc(m.id)}</span><span class="name">${esc(m.name)}</span><span class="pct">${d}/${mine.length} · ${p}%</span>
+      <div class="progress"><i style="width:${p}%"></i></div>
+      ${m.goal ? `<div class="goal">${esc(m.goal)}</div>` : ""}</div>`;
+  }).join("");
+
+  document.getElementById("root").innerHTML = `
+    <div class="head">
+      <div><h1>${esc(cfg.title)}</h1><p class="sub">${esc(cfg.subtitle || "")}</p></div>
+      <span class="tag ${hColor} health" title="Click to change">${hLabel}</span>
+    </div>
+    ${cfg.health?.note ? `<div class="callout ${hColor === "green" ? "ok" : hColor === "yellow" ? "warn" : "danger"}">${esc(cfg.health.note)}</div>` : ""}
+    <div class="grid" style="margin-top:14px">
+      <div class="stat"><b>${pct}%</b><span>done (${done} of ${cards.length})</span></div>
+      <div class="stat"><b>${doing.length}</b><span>in progress</span></div>
+      <div class="stat"><b>${blocked.length}</b><span>blocked</span></div>
+      <div class="stat"><b>${decisions.length}</b><span>decisions recorded</span></div>
+    </div>
+    ${sessionHtml}
+    <h2>Milestones ${jump(cfg.roadmap, "roadmap")}</h2>
+    ${ms || `<p class="muted">No milestones in the dashboard file.</p>`}
+    <div class="cols">
+      <div><h2>In progress ${jump(cfg.board, "board")}</h2>
+        <ul class="list">${doing.map(c => `<li>${esc(c.title)} <span class="muted">${esc(c.owner || "")}</span></li>`).join("") || `<li class="muted">Nothing in progress</li>`}</ul></div>
+      <div><h2>Blocked</h2>
+        <ul class="list">${blocked.map(c => `<li>${esc(c.title)} <span class="muted">${esc(c.milestone || "")}</span></li>`).join("") || `<li class="muted">Nothing blocked</li>`}</ul></div>
+    </div>
+    <h2>Decisions ${jump(cfg.decisions, "all")}</h2>
+    <ul class="list">${decisions.slice(-5).reverse().map(d => `<li><a data-focus="${esc(cfg.decisions)}">${esc(pretty(d.name))}</a><span class="muted">${esc(d.name.match(/^\d+/)?.[0] || "")}</span></li>`).join("") || `<li class="muted">None yet</li>`}</ul>`;
+}
+
+document.addEventListener("click", async e => {
+  const f = e.target.closest("[data-focus]");
+  if (f) return grim.focus(f.dataset.focus);
+  if (e.target.closest(".health")) {
+    const order = Object.keys(HEALTH);
+    cfg.health = { ...cfg.health, status: order[(order.indexOf(cfg.health?.status || "on-track") + 1) % order.length] };
+    await grim.writeJSON(cfg);
+  }
+});
+
+// The dashboard is computed from the board and decision log: re-render when any of them change.
+grim.onChange(({ artifact, self }) => { if (self || [cfg?.board, cfg?.decisions, cfg?.sessions].includes(artifact)) render(); });
+render();
+</script>
+</body>
+</html>

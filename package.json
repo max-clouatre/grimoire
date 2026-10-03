@@ -1,0 +1,17 @@
+{
+  "name": "grimoire",
+  "version": "0.1.0",
+  "description": "A filesystem-driven grimoire for your projects and agents: folders are channels, files are pages, sessions write themselves.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "grim": "./cli.mjs",
+    "grimoire": "./cli.mjs"
+  },
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

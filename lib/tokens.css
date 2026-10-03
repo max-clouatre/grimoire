@@ -1,0 +1,96 @@
+/* Grimoire design tokens — the defaults every theme starts from.
+
+   A theme is one CSS file in .grimoire/themes/ that overrides any of these on :root
+   (and optionally :root[data-mode="dark"]). Both the app and every artifact read
+   the same tokens, so a theme restyles everything at once. Anything a theme
+   leaves out falls back to the values here. Derived tokens at the bottom are
+   computed from the others; themes rarely need to touch them. */
+
+:where(:root) {
+  /* ---- Core (shadcn-style) ---- */
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #f7f7f8;
+  --card-foreground: var(--foreground);
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --accent: #2563eb;              /* links, highlights, focus */
+  --border: #e4e4e7;
+  --ring: var(--accent);
+  --radius: 10px;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  --text-size: 15px;
+  --heading-weight: 700;
+  --heading-transform: none;
+  --heading-tracking: -0.01em;
+  --heading-color: var(--foreground);
+  --text-shadow: none;            /* e.g. a glow for neon themes */
+  --heading-shadow: var(--text-shadow);
+
+  /* ---- Status palette ---- */
+  --red: #ef4444; --orange: #f97316; --yellow: #eab308; --green: #22c55e;
+  --blue: #3b82f6; --purple: #8b5cf6; --teal: #14b8a6;
+
+  /* ---- Surfaces (background shorthands: colors, gradients or images) ---- */
+  --page: var(--background);       /* an artifact's page */
+  --surface: var(--card);          /* .card, .stat, panels inside artifacts */
+  --surface-border: 1px solid var(--border);
+
+  /* ---- App chrome ---- */
+  --wallpaper: #f4f4f5;            /* behind the stage */
+  --sidebar: #fafafa;
+  --sidebar-foreground: var(--foreground);
+  --sidebar-muted: var(--muted-foreground);
+  --sidebar-accent: #ececee;       /* selected channel row */
+  --sidebar-border: var(--border);
+  --overlay: rgba(255, 255, 255, 0.72);        /* tab strip and buttons on the wallpaper */
+  --overlay-foreground: var(--foreground);
+  --overlay-blur: 12px;
+  --tab-active: var(--primary);
+  --tab-active-foreground: var(--primary-foreground);
+  --frame: var(--page);            /* artifact frame background */
+  --frame-border: 1px solid var(--border);
+  --frame-radius: calc(var(--radius) + 2px);
+  --frame-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 10px 30px rgba(0, 0, 0, 0.08);
+  --titlebar: var(--muted);
+  --titlebar-foreground: var(--muted-foreground);
+
+  color-scheme: light;
+}
+
+:where(:root[data-mode="dark"]) {
+  --background: #0a0a0b;
+  --foreground: #fafafa;
+  --card: #141416;
+  --muted: #1c1c1f;
+  --muted-foreground: #a1a1aa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --accent: #60a5fa;
+  --border: #27272a;
+  --wallpaper: #050506;
+  --sidebar: #0e0e10;
+  --sidebar-accent: #1f1f23;
+  --overlay: rgba(24, 24, 27, 0.72);
+  --frame-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 10px 30px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+
+/* Defaults sit inside :where() (zero specificity), so a theme's plain :root rules always win.
+   ---- Derived (computed from the tokens above, per element, so overrides flow through) ---- */
+:where(:root) {
+  --red-soft: color-mix(in srgb, var(--red) 16%, var(--background));
+  --orange-soft: color-mix(in srgb, var(--orange) 16%, var(--background));
+  --yellow-soft: color-mix(in srgb, var(--yellow) 18%, var(--background));
+  --green-soft: color-mix(in srgb, var(--green) 16%, var(--background));
+  --blue-soft: color-mix(in srgb, var(--blue) 16%, var(--background));
+  --purple-soft: color-mix(in srgb, var(--purple) 16%, var(--background));
+  --teal-soft: color-mix(in srgb, var(--teal) 16%, var(--background));
+  --accent-soft: color-mix(in srgb, var(--accent) 14%, var(--background));
+  --hover: color-mix(in srgb, var(--foreground) 7%, transparent);
+}

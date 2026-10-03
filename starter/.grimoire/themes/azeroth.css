@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Alegreya+Sans:wght@400;500;700&display=swap");
+/*
+  @name Azeroth
+  @description Gold trim, dark leather and loot-quality colors
+  @modes dark
+*/
+
+:root {
+  --background: #160f09;
+  --foreground: #f1e6cf;
+  --card: #241810;
+  --muted: #2a1c12;
+  --muted-foreground: #b8a07a;
+  --primary: #8e1a12;              /* the red button */
+  --primary-foreground: #ffd100;
+  --accent: #ffd100;               /* quest-text gold */
+  --border: #5c4520;
+  --radius: 4px;
+
+  --font-sans: "Alegreya Sans", "Segoe UI", sans-serif;
+  --font-heading: "Cinzel", Georgia, serif;
+  --text-size: 16px;
+  --heading-weight: 900;
+  --heading-tracking: 0.03em;
+  --heading-color: #ffd100;
+  --heading-shadow: 0 2px 0 #000, 0 0 10px rgba(255, 170, 0, 0.35);
+
+  /* Item quality: poor/common → uncommon, rare, epic, legendary */
+  --red: #c41f3b; --orange: #ff8000; --yellow: #ffd100; --green: #1eff00;
+  --blue: #0070dd; --purple: #a335ee; --teal: #40c7eb;
+
+  --page: radial-gradient(ellipse at top, #2e1f13 0%, #170f09 70%);
+  --surface: linear-gradient(180deg, #2c1e13, #1a110a);
+  --surface-border: 1px solid #8a6a2f;
+
+  --wallpaper: radial-gradient(ellipse at 50% 110%, #4a2410 0%, #1a0d06 50%, #070403 100%);
+  --sidebar: linear-gradient(180deg, #1d140c, #0f0a06);
+  --sidebar-foreground: #f1e6cf;
+  --sidebar-muted: #a88e66;
+  --sidebar-accent: rgba(255, 209, 0, 0.12);
+  --sidebar-border: #8a6a2f;
+  --overlay: linear-gradient(180deg, rgba(42, 28, 16, 0.92), rgba(20, 13, 8, 0.94));
+  --overlay-foreground: #f1e6cf;
+  --tab-active: linear-gradient(180deg, #a3241a, #5e0f0a);
+  --tab-active-foreground: #ffd100;
+  --frame: #160f09;
+  --frame-border: 2px solid #b08d3c;
+  --frame-radius: 6px;
+  --frame-shadow: 0 0 0 1px #000, 0 0 0 5px #2a1d0e, 0 0 0 6px #6d5424, 0 16px 44px rgba(0, 0, 0, 0.85);
+  --titlebar: linear-gradient(180deg, #2a1c12, #170f09);
+  --titlebar-foreground: #c9b58c;
+}

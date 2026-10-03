@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lato:wght@400;700&display=swap");
+/*
+  @name Final Fantasy
+  @description Blue gradient menu windows, crystal light
+  @modes dark
+*/
+
+:root {
+  --background: #0b1450;
+  --foreground: #f4f6ff;
+  --card: #1a2a8a;
+  --muted: rgba(255, 255, 255, 0.1);
+  --muted-foreground: #c3cbff;
+  --primary: #f4f6ff;
+  --primary-foreground: #0b1450;
+  --accent: #ffe08a;               /* the menu cursor gold */
+  --border: rgba(225, 230, 255, 0.4);
+  --radius: 6px;
+
+  --font-sans: "Lato", "Segoe UI", sans-serif;
+  --font-heading: "Cinzel", Georgia, serif;
+  --heading-tracking: 0.04em;
+  --heading-color: #ffffff;
+  --text-shadow: 1px 1px 0 rgba(0, 0, 20, 0.7);   /* classic menu drop shadow */
+  --heading-shadow: 2px 2px 0 rgba(0, 0, 20, 0.8);
+
+  --red: #ff6b6b; --orange: #ffb35c; --yellow: #ffe08a; --green: #7dff9a;
+  --blue: #8ab4ff; --purple: #d29bff; --teal: #6ff2e0;
+
+  /* Every page is a menu window: vertical blue gradient, white rounded rim. */
+  --page: linear-gradient(180deg, #3550c8 0%, #1a2a8a 45%, #0b1450 100%);
+  --surface: linear-gradient(180deg, rgba(80, 104, 230, 0.55), rgba(14, 24, 110, 0.7));
+  --surface-border: 2px solid #dfe3f7;
+
+  --wallpaper: radial-gradient(ellipse at 50% 120%, #2c1d6b 0%, #0a0a2a 55%, #03030f 100%);
+  --sidebar: linear-gradient(180deg, #2a42b8 0%, #121d72 60%, #0b1450 100%);
+  --sidebar-foreground: #ffffff;
+  --sidebar-muted: #b9c2ff;
+  --sidebar-accent: rgba(255, 255, 255, 0.16);
+  --sidebar-border: #dfe3f7;
+  --overlay: linear-gradient(180deg, rgba(53, 80, 200, 0.9), rgba(11, 20, 80, 0.92));
+  --overlay-foreground: #ffffff;
+  --tab-active: #f4f6ff;
+  --tab-active-foreground: #0b1450;
+  --frame: #0b1450;
+  --frame-border: 3px solid #e6e9f8;
+  --frame-radius: 10px;
+  --frame-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 14px 40px rgba(0, 0, 30, 0.8);
+  --titlebar: linear-gradient(180deg, #1a2a8a, #0b1450);
+  --titlebar-foreground: #c3cbff;
+}

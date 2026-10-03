@@ -1,0 +1,7 @@
+{"t":"2026-10-01T14:02:00.000Z","by":"claude","kind":"start","text":"Picked up M2: drag-to-reorder."}
+{"t":"2026-10-01T14:40:00.000Z","by":"claude","kind":"change","text":"Edited files","files":["src/web/App.tsx","src/web/TodoItem.tsx"]}
+{"t":"2026-10-01T15:15:00.000Z","by":"claude","kind":"finding","text":"Ordering by id can't express user order; reorder needs a stored position."}
+{"t":"2026-10-01T15:30:00.000Z","by":"claude","kind":"question","text":"Integer position with renumbering, or fractional index keys? Drafted ADR 0004 with both options.","refs":["CM-015"]}
+{"t":"2026-10-01T16:05:00.000Z","by":"claude","kind":"blocker","text":"Drag-to-reorder is blocked until the ordering strategy is decided.","refs":["CM-014"]}
+{"t":"2026-10-01T16:20:00.000Z","by":"claude","kind":"summary","text":"Reorder spike done; decision needed on ADR 0004 before the migration."}
+{"t":"2026-10-01T16:21:00.000Z","by":"claude","kind":"end","text":"Session ended"}

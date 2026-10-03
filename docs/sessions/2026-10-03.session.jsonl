@@ -1,0 +1,4 @@
+{"t":"2026-10-03T13:43:46.614Z","by":"claude","kind":"change","text":"Edited files","files":["grimoire/starter/.grimoire/channels/10-welcome/10-start-here.md","grimoire/README.md"],"session":"8b413b20-19e0-467d-83cb-4b60e1040d46","last":"2026-10-03T13:44:21.980Z"}
+{"t":"2026-10-03T13:44:28.851Z","by":"claude","kind":"done","text":"Prepared the repo for GitHub: full README, starter/ kit (skill, hooks, themes, welcome channel), .gitignore; dropped 4 MB of unused Television assets."}
+{"t":"2026-10-03T13:44:28.919Z","by":"claude","kind":"decision","text":"Next distribution step on the board: make the repo a Claude plugin marketplace so /plugin install grimoire sets up any project.","refs":["grim-033"]}
+{"t":"2026-10-03T13:44:28.987Z","by":"claude","kind":"question","text":"License not chosen yet; README says all rights reserved until a LICENSE is added (MIT planned)."}

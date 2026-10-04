@@ -120,4 +120,4 @@ Inspired by [Television](https://github.com/telepath-computer/television) by Tel
 
 ## License
 
-Not yet chosen. MIT is the plan (see the [Ideas](docs/ideas/index.html) page); until a `LICENSE` file is added, all rights are reserved.
+[MIT](LICENSE)
